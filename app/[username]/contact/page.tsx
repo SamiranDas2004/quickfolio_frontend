@@ -54,7 +54,7 @@ export default function ContactPage() {
         </div>
         
         <div className="flex-1 flex items-center justify-center">
-          {user?.contact?.email || user?.contact?.phone || user?.contact?.location || (user?.social_links && Object.keys(user.social_links).some(key => user.social_links[key])) ? (
+          {user?.contact?.email || user?.contact?.phone || user?.contact?.location || (user?.social_links && Object.keys(user.social_links).some(key => user.social_links[key as keyof typeof user.social_links])) ? (
             <CardContainer className="inter-var">
               <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[35rem] h-auto rounded-xl p-8 border">
                 <CardItem translateZ="50" className="text-3xl font-bold text-neutral-600 dark:text-white mb-2">
@@ -96,7 +96,7 @@ export default function ContactPage() {
                       <div 
                         className="flex items-center gap-4 p-4 bg-green-500/10 rounded-lg hover:bg-green-500/20 transition-all cursor-pointer"
                         onClick={() => {
-                          navigator.clipboard.writeText(user.contact.phone);
+                          navigator.clipboard.writeText(user.contact.phone!);
                           toast.success("Phone number copied to clipboard!");
                         }}
                       >
@@ -135,7 +135,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Social Links */}
-                {user?.social_links && Object.keys(user.social_links).some(key => user.social_links[key]) && (
+                {user?.social_links && Object.keys(user.social_links).some(key => user.social_links[key as keyof typeof user.social_links]) && (
                   <CardItem translateZ="100" className="w-full mt-6">
                     <div className="border-t border-white/10 pt-6">
                       <p className="text-neutral-400 text-sm mb-4">Connect on Social Media</p>

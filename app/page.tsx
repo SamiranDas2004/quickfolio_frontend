@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+// import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Image from "next/image";
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 import { Compare } from "@/components/ui/compare";

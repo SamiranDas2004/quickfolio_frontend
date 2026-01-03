@@ -1,17 +1,16 @@
 "use client";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import React from "react";
 
 export const LoaderOne = () => {
-  const transition = (x: number) => {
-    return {
-      duration: 1,
-      repeat: Infinity,
-      repeatType: "loop" as const,
-      delay: x * 0.2,
-      ease: "easeInOut",
-    };
-  };
+  const transition = (x: number) => ({
+    duration: 1,
+    repeat: Infinity,
+    repeatType: "loop" as const,
+    delay: x * 0.2,
+    ease: "easeInOut" as const,
+  });
+  
   return (
     <div className="flex items-center gap-2">
       <motion.div
@@ -56,9 +55,9 @@ export const LoaderFive = ({ text }: { text: string }) => {
           transition={{
             duration: 0.5,
             repeat: Infinity,
-            repeatType: "loop",
+            repeatType: "loop" as const,
             delay: i * 0.05,
-            ease: "easeInOut",
+            ease: "easeInOut" as const,
             repeatDelay: 2,
           }}
         >

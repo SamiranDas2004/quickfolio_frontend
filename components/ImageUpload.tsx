@@ -1,7 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
-import Cropper from "react-easy-crop";
-import { Point, Area } from "react-easy-crop/types";
+// import Cropper from "react-easy-crop";
+import Cropper, { Point, Area } from "react-easy-crop";
+
 
 interface ImageUploadProps {
   onUpload: (croppedImage: Blob) => Promise<void>;

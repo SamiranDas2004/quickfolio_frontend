@@ -252,7 +252,7 @@ export default function Dashboard() {
   const stats = [
     { label: "Projects", value: user?.projects?.length || 0, icon: "📁" },
     { label: "Skills", value: user?.skills?.length || 0, icon: "⚡" },
-    { label: "Experience", value: user?.experiences?.length || 0, icon: "💼" },
+    { label: "Experience", value: user?.experience?.length || 0, icon: "💼" },
     { label: "Profile Views", value: analytics?.view_count || 0, icon: "👁️" },
   ];
 

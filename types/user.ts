@@ -46,4 +46,5 @@ export interface ContactInfo {
   email: string;
   phone?: string;
   location?: string;
+  resume_url?: string;
 }
