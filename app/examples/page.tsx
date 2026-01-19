@@ -70,7 +70,7 @@ export default function ExamplesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-semibold text-white">
             <img src="/logo.png" alt="Quickfolio" className="w-8 h-8" />
-            quickfolio
+            Quickfolio
           </Link>
           
           <nav className="hidden md:flex gap-8">

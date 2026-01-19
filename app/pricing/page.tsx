@@ -12,7 +12,7 @@ export default function PricingPage() {
       description: "Perfect for getting started",
       features: [
         "Basic AI portfolio generation",
-        "quickfolio.dev subdomain",
+        "quickfolio.in subdomain",
         "1 portfolio theme",
         "Basic analytics",
         "Community support",
@@ -71,7 +71,7 @@ export default function PricingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 font-semibold text-white">
             <img src="/logo.png" alt="Quickfolio" className="w-8 h-8" />
-            quickfolio
+            Quickfolio
           </a>
           
           <nav className="hidden md:flex gap-8">
