@@ -156,14 +156,14 @@ export default function DesignsPage() {
           <div className="mt-20 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">Ready to customize your portfolio?</h2>
             <p className="text-zinc-400 mb-8">Sign up and choose your favorite design</p>
-            <HoverBorderGradient
-              containerClassName="rounded-full"
-              as="a"
-              href="/signup"
-              className="bg-blue-500 text-white px-8 py-3 inline-block font-semibold"
-            >
-              Get Started Free
-            </HoverBorderGradient>
+            <Link href="/signup">
+              <HoverBorderGradient
+                containerClassName="rounded-full"
+                className="bg-blue-500 text-white px-8 py-3 inline-block font-semibold"
+              >
+                Get Started Free
+              </HoverBorderGradient>
+            </Link>
           </div>
         </div>
       </div>

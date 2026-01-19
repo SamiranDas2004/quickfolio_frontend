@@ -170,14 +170,14 @@ export default function PricingPage() {
           <div className="mt-20 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">Need something custom?</h2>
             <p className="text-zinc-400 mb-8">Contact us for enterprise solutions and bulk pricing</p>
-            <HoverBorderGradient
-              containerClassName="rounded-full"
-              as="a"
-              href="mailto:hello@quickfolio.in"
-              className="bg-black text-white px-8 py-3 inline-block"
-            >
-              Contact Sales
-            </HoverBorderGradient>
+            <a href="mailto:hello@quickfolio.in">
+              <HoverBorderGradient
+                containerClassName="rounded-full"
+                className="bg-black text-white px-8 py-3 inline-block"
+              >
+                Contact Sales
+              </HoverBorderGradient>
+            </a>
           </div>
         </div>
       </div>

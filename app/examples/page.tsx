@@ -176,14 +176,14 @@ export default function ExamplesPage() {
           <div className="mt-20 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">Ready to create yours?</h2>
             <p className="text-zinc-400 mb-8">Join thousands of professionals showcasing their work with Quickfolio</p>
-            <HoverBorderGradient
-              containerClassName="rounded-full"
-              as="a"
-              href="/"
-              className="bg-blue-500 text-white px-8 py-3 inline-block font-semibold"
-            >
-              Get Started Free
-            </HoverBorderGradient>
+            <Link href="/">
+              <HoverBorderGradient
+                containerClassName="rounded-full"
+                className="bg-blue-500 text-white px-8 py-3 inline-block font-semibold"
+              >
+                Get Started Free
+              </HoverBorderGradient>
+            </Link>
           </div>
         </div>
       </div>
