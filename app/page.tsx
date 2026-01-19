@@ -73,7 +73,10 @@ export default function Home() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="font-semibold text-white">quickfolio</div>
+          <Link href="/" className="flex items-center gap-2 font-semibold text-white">
+            <img src="/logo.png" alt="Quickfolio" className="w-8 h-8" />
+            Quickfolio
+          </Link>
           
           <nav className="hidden md:flex gap-8">
             <Link href="/" className="text-sm text-zinc-400 hover:text-white">Home</Link>
@@ -115,7 +118,7 @@ export default function Home() {
                 className="bg-black"
               >
                 <div className="flex items-center rounded-full px-6 py-3 gap-4 max-w-md w-full">
-                  <span className="text-base text-zinc-400">quickfolio.dev/</span>
+                  <span className="text-base text-zinc-400">quickfolio.in/</span>
                   <input
                     placeholder="your-name"
                     value={username}
