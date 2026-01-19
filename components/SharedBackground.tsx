@@ -3,6 +3,13 @@ import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import { Spotlight } from "@/components/ui/spotlight";
+import VantaBirds from "@/components/VantaBirds";
+import VantaGlobe from "@/components/VantaGlobe";
+import VantaHalo from "@/components/VantaHalo";
+import VantaDots from "@/components/VantaDots";
+import VantaClouds from "@/components/VantaClouds";
+import VantaClouds1 from "@/components/VantaClouds1";
+import VantaRings from "@/components/VantaRings";
 
 interface SharedBackgroundProps {
   backgroundType: string;
@@ -10,6 +17,14 @@ interface SharedBackgroundProps {
 
 export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
   const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
+  
+  if (backgroundType === "birds") return <VantaBirds />;
+  if (backgroundType === "globe") return <VantaGlobe />;
+  if (backgroundType === "halo") return <VantaHalo />;
+  if (backgroundType === "dots") return <VantaDots />;
+  if (backgroundType === "clouds") return <VantaClouds />;
+  if (backgroundType === "clouds1") return <VantaClouds1 />;
+  if (backgroundType === "rings") return <VantaRings />;
   
   if (imageThemes.includes(backgroundType)) {
     return (
@@ -57,7 +72,9 @@ export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
 
 export function getTextColor(backgroundType: string) {
   const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
+  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings"];
   
+  if (vantaThemes.includes(backgroundType)) return "text-white";
   if (imageThemes.includes(backgroundType)) {
     return "text-white";
   }
@@ -71,7 +88,9 @@ export function getTextColor(backgroundType: string) {
 
 export function getSecondaryTextColor(backgroundType: string) {
   const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
+  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings"];
   
+  if (vantaThemes.includes(backgroundType)) return "text-white/80";
   if (imageThemes.includes(backgroundType)) {
     return "text-white/90";
   }

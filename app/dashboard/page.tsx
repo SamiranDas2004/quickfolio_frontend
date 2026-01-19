@@ -508,6 +508,13 @@ export default function Dashboard() {
     <option className="bg-black text-white" value="ripple">Ripple Effect</option>
     <option className="bg-black text-white" value="beams">Beams Effect</option>
     <option className="bg-black text-white" value="lines">Lines Effect</option>
+    <option className="bg-black text-white" value="birds">Birds Effect</option>
+    <option className="bg-black text-white" value="globe">Globe Effect</option>
+    <option className="bg-black text-white" value="halo">Halo Effect</option>
+    <option className="bg-black text-white" value="dots">Dots Effect</option>
+    <option className="bg-black text-white" value="clouds">Clouds 2 Effect</option>
+    <option className="bg-black text-white" value="clouds1">Clouds Effect</option>
+    <option className="bg-black text-white" value="rings">Rings Effect</option>
     <option className="bg-black text-white" value="blackpanther">Black Panther</option>
     <option className="bg-black text-white" value="evil_linux">Evil Linux</option>
     <option className="bg-black text-white" value="linux">Linux</option>

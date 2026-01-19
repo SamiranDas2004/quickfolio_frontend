@@ -13,7 +13,7 @@ export default function UserPortfolio() {
   const username = params.username as string;
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [backgroundType, setBackgroundType] = useState<"ripple" | "beams" | "lines" | "blackpanther" | "evil_linux" | "linux" | "windows_xp">("ripple");
+  const [backgroundType, setBackgroundType] = useState<"ripple" | "beams" | "lines" | "birds" | "globe" | "halo" | "dots" | "clouds" | "clouds1" | "rings" | "blackpanther" | "evil_linux" | "linux" | "windows_xp">("ripple");
 
   useEffect(() => {
     const fetchUser = async () => {
