@@ -507,6 +507,7 @@ export default function Dashboard() {
   >
     <option className="bg-black text-white" value="ripple">Ripple Effect</option>
     <option className="bg-black text-white" value="beams">Beams Effect</option>
+    <option className="bg-black text-white" value="vortex">Vortex Effect</option>
     <option className="bg-black text-white" value="lines">Lines Effect</option>
     <option className="bg-black text-white" value="birds">Birds Effect</option>
     <option className="bg-black text-white" value="globe">Globe Effect</option>

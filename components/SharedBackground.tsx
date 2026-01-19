@@ -3,6 +3,7 @@ import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import { Spotlight } from "@/components/ui/spotlight";
+import { Vortex } from "@/components/ui/vortex";
 import VantaBirds from "@/components/VantaBirds";
 import VantaGlobe from "@/components/VantaGlobe";
 import VantaHalo from "@/components/VantaHalo";
@@ -25,6 +26,10 @@ export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
   if (backgroundType === "clouds") return <VantaClouds />;
   if (backgroundType === "clouds1") return <VantaClouds1 />;
   if (backgroundType === "rings") return <VantaRings />;
+  
+  if (backgroundType === "vortex") {
+    return <Vortex backgroundColor="black" baseHue={120} particleCount={500} rangeY={800} className="absolute inset-0" />;
+  }
   
   if (imageThemes.includes(backgroundType)) {
     return (
@@ -72,7 +77,7 @@ export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
 
 export function getTextColor(backgroundType: string) {
   const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
-  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings"];
+  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings", "vortex"];
   
   if (vantaThemes.includes(backgroundType)) return "text-white";
   if (imageThemes.includes(backgroundType)) {
@@ -88,7 +93,7 @@ export function getTextColor(backgroundType: string) {
 
 export function getSecondaryTextColor(backgroundType: string) {
   const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
-  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings"];
+  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings", "vortex"];
   
   if (vantaThemes.includes(backgroundType)) return "text-white/80";
   if (imageThemes.includes(backgroundType)) {

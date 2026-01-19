@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import Image from "next/image";
@@ -75,9 +76,10 @@ export default function Home() {
           <div className="font-semibold text-white">quickfolio</div>
           
           <nav className="hidden md:flex gap-8">
-            <a href="#" className="text-sm text-zinc-400 hover:text-white">Home</a>
-            <a href="#" className="text-sm text-zinc-400 hover:text-white">Examples</a>
-            <a href="#" className="text-sm text-zinc-400 hover:text-white">Pricing</a>
+            <Link href="/" className="text-sm text-zinc-400 hover:text-white">Home</Link>
+            <Link href="/examples" className="text-sm text-zinc-400 hover:text-white">Examples</Link>
+            <Link href="/designs" className="text-sm text-zinc-400 hover:text-white">Designs</Link>
+            <Link href="/pricing" className="text-sm text-zinc-400 hover:text-white">Pricing</Link>
           </nav>
           
           <div className="flex items-center gap-2 sm:gap-4">
