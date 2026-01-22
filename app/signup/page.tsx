@@ -213,7 +213,7 @@ function SignupContent() {
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        value={`http://localhost:3000/${formData.username}`}
+                        value={`https://quickfolio.in/${formData.username}`}
                         readOnly
                         className="flex-1 px-4 py-2 bg-zinc-700 border border-zinc-600 rounded-lg text-white text-sm"
                       />
