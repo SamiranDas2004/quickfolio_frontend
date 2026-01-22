@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   const fetchUserData = async (username: string, token: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/users/${username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -37,7 +37,7 @@ export default function Dashboard() {
         setIsAuthenticated(true);
         
         // Fetch analytics
-        const analyticsResponse = await fetch(`http://localhost:8000/api/analytics/${username}`, {
+        const analyticsResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/analytics/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (analyticsResponse.ok) {
@@ -57,7 +57,7 @@ export default function Dashboard() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -91,7 +91,7 @@ export default function Dashboard() {
     if (!user) return;
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/users/${user.username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.username}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +121,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("token");
       toast.loading("Uploading avatar...", { id: "avatar" });
-      const response = await fetch(`http://localhost:8000/api/upload-avatar/${user.username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-avatar/${user.username}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -148,7 +148,7 @@ export default function Dashboard() {
     try {
       const token = localStorage.getItem("token");
       toast.loading("Uploading project image...", { id: "project-img" });
-      const response = await fetch(`http://localhost:8000/api/upload-project-image/${user.username}?project_id=${selectedProjectId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-project-image/${user.username}?project_id=${selectedProjectId}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -176,7 +176,7 @@ export default function Dashboard() {
     
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/users/${user.username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.username}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

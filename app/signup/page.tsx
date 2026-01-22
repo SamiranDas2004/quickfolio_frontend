@@ -33,7 +33,7 @@ function SignupContent() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/signup", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -90,7 +90,7 @@ function SignupContent() {
         setProgress((prev) => Math.min(prev + 10, 90));
       }, 300);
 
-      const response = await fetch(`http://localhost:8000/api/upload-resume/${username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-resume/${username}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formDataUpload,

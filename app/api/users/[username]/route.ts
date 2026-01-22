@@ -7,7 +7,7 @@ export async function GET(
     console.log(`Fetching user: ${username}`);
     
     const response = await fetch(
-      `http://localhost:8000/api/users/${username}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`,
       { cache: 'no-store' }
     );
     

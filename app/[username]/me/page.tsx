@@ -30,7 +30,7 @@ export default function MePage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/users/${username}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`);
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
@@ -82,7 +82,7 @@ export default function MePage() {
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/chat/${username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/chat/${username}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage }),
@@ -191,7 +191,7 @@ export default function MePage() {
       const formData = new FormData();
       formData.append("file", audioBlob, "audio.webm");
 
-      const response = await fetch("http://localhost:8000/api/transcribe", {
+      const response = await fetch("${process.env.NEXT_PUBLIC_BACKEND_URL}/api/transcribe", {
         method: "POST",
         body: formData,
       });

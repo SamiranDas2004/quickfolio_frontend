@@ -17,7 +17,7 @@ export default function SkillsPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/users/${username}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`);
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);

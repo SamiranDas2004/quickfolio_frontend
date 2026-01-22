@@ -37,8 +37,8 @@ export default function ProjectsPage() {
     const fetchData = async () => {
       try {
         const [userRes, projectsRes] = await Promise.all([
-          fetch(`http://localhost:8000/api/users/${username}`),
-          fetch(`http://localhost:8000/api/projects/${username}`)
+          fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`),
+          fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/projects/${username}`)
         ]);
         
         if (userRes.ok) {
@@ -82,7 +82,7 @@ export default function ProjectsPage() {
     setSending(true);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/chat/projects/${username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/chat/projects/${username}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage }),

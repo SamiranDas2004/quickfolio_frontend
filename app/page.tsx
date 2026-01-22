@@ -44,7 +44,7 @@ export default function Home() {
     setError("");
 
     try {
-      const response = await fetch(`http://localhost:8000/api/check-username/${username}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/check-username/${username}`);
       const data = await response.json();
 
       if (data.available) {

@@ -28,7 +28,7 @@ export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
   if (backgroundType === "rings") return <VantaRings />;
   
   if (backgroundType === "vortex") {
-    return <Vortex backgroundColor="black" baseHue={120} particleCount={500} rangeY={800} className="absolute inset-0" />;
+    return <Vortex backgroundColor="black" baseHue={120} particleCount={500} rangeY={800} containerClassName="absolute inset-0" />;
   }
   
   if (imageThemes.includes(backgroundType)) {

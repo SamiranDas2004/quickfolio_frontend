@@ -13,12 +13,12 @@ export default function UserPortfolio() {
   const username = params.username as string;
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [backgroundType, setBackgroundType] = useState<"ripple" | "beams" | "lines" | "birds" | "globe" | "halo" | "dots" | "clouds" | "clouds1" | "rings" | "blackpanther" | "evil_linux" | "linux" | "windows_xp">("ripple");
+  const [backgroundType, setBackgroundType] = useState<"ripple" | "beams" | "lines" | "birds" | "globe" | "halo" | "dots" | "clouds" | "clouds1" | "rings" | "vortex" | "blackpanther" | "evil_linux" | "linux" | "windows_xp">("ripple");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/users/${username}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`);
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
@@ -82,7 +82,7 @@ export default function UserPortfolio() {
           <p className={`text-lg max-w-2xl mx-auto ${getSecondaryTextColor(backgroundType)}`}>
             {user.bio}
           </p>
-          <Navigation username={username} />
+          <Navigation username={username} currentPage="/" />
         </div>
       </main>
     </div>
