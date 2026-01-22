@@ -73,7 +73,7 @@ export default function UserPortfolio() {
               />
             </div>
           </div>
-          <div className="h-40 flex items-center justify-center">
+          <div className="h-40 w-full flex items-center justify-center overflow-visible px-8">
             <TextHoverEffect text={user.name} />
           </div>
           <p className={`text-xl md:text-2xl ${getTextColor(backgroundType)}`}>
