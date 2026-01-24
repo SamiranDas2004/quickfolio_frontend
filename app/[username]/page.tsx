@@ -7,6 +7,9 @@ import { User } from "@/types/user";
 import { useParams } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import { LoaderFive } from "@/components/ui/loader";
+import FullPagePortfolio from "@/components/FullPagePortfolio";
+import ProfessionalPortfolio from "@/components/ProfessionalPortfolio";
+import ModernPortfolio from "@/components/ModernPortfolio";
 
 export default function UserPortfolio() {
   const params = useParams();
@@ -55,6 +58,22 @@ export default function UserPortfolio() {
     );
   }
 
+  // Render full-page template if selected
+  if (user.template_type === "fullpage") {
+    return <FullPagePortfolio user={user} />;
+  }
+
+  // Render professional template if selected
+  if (user.template_type === "professional") {
+    return <ProfessionalPortfolio user={user} />;
+  }
+
+  // Render modern template if selected
+  if (user.template_type === "modern") {
+    return <ModernPortfolio user={user} />;
+  }
+
+  // Render conversational template (default)
   return (
     <div className="relative flex min-h-screen items-center justify-center font-sans overflow-hidden">
       <SharedBackground backgroundType={backgroundType} />

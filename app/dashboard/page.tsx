@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { User, Project, Experience } from "@/types/user";
 import ImageUpload from "@/components/ImageUpload";
 import ThemeCustomizer from "@/components/ThemeCustomizer";
+import SectionItemEditor from "@/components/SectionItemEditor";
 import toast from "react-hot-toast";
 
 export default function Dashboard() {
@@ -17,6 +18,10 @@ export default function Dashboard() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<any>(null);
   const [showThemeCustomizer, setShowThemeCustomizer] = useState(false);
+  const [showAddSectionModal, setShowAddSectionModal] = useState(false);
+  const [editingSection, setEditingSection] = useState<any>(null);
+  const [newSectionData, setNewSectionData] = useState({ type: "", title: "", content: "", image: "", link: "" });
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -89,6 +94,7 @@ export default function Dashboard() {
 
   const handleUpdate = async (field: string, value: any) => {
     if (!user) return;
+    console.log("Updating field:", field, "with value:", JSON.stringify(value, null, 2));
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.username}`, {
@@ -102,12 +108,16 @@ export default function Dashboard() {
       
       if (response.ok) {
         const updated = await response.json();
+        console.log("Updated user:", updated);
         setUser(updated);
         toast.success("Profile updated successfully");
       } else {
+        const error = await response.text();
+        console.error("Update failed:", error);
         toast.error("Update failed");
       }
     } catch (error) {
+      console.error("Update error:", error);
       toast.error("Update failed. Please try again.");
     }
   };
@@ -202,6 +212,76 @@ export default function Dashboard() {
     }
   };
 
+  const handleImageUpload = async (file: File) => {
+    if (!user) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    try {
+      setUploadingImage(true);
+      toast.loading("Uploading image...", { id: "section-img" });
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-project-image/${user.username}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setNewSectionData({ ...newSectionData, image: data.image_url });
+        toast.success("Image uploaded", { id: "section-img" });
+      } else {
+        toast.error("Upload failed", { id: "section-img" });
+      }
+    } catch (error) {
+      toast.error("Upload failed", { id: "section-img" });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleAddSection = () => {
+    if (!user || !newSectionData.type) {
+      toast.error("Please enter section type");
+      return;
+    }
+    const newSection = {
+      id: Date.now().toString(),
+      type: newSectionData.type,
+      title: newSectionData.type.charAt(0).toUpperCase() + newSectionData.type.slice(1),
+      order: (user.custom_sections?.length || 0) + 1,
+      visible: true,
+      items: []
+    };
+    const updatedSections = [...(user.custom_sections || []), newSection];
+    handleUpdate("custom_sections", updatedSections);
+    setShowAddSectionModal(false);
+    setNewSectionData({ type: "", title: "", content: "", image: "", link: "" });
+    setEditingSection(newSection);
+    toast.success("Section created. Add items now.");
+  };
+
+  const handleDeleteSection = (sectionId: string) => {
+    if (!user) return;
+    const updatedSections = user.custom_sections?.filter(s => s.id !== sectionId) || [];
+    handleUpdate("custom_sections", updatedSections);
+    toast.success("Section deleted");
+  };
+
+  const handleToggleSection = (sectionId: string) => {
+    if (!user) return;
+    const updatedSections = user.custom_sections?.map(s => 
+      s.id === sectionId ? { ...s, visible: !s.visible } : s
+    ) || [];
+    handleUpdate("custom_sections", updatedSections);
+  };
+
+  const handleReorderSections = (sections: any[]) => {
+    const reordered = sections.map((s, idx) => ({ ...s, order: idx + 1 }));
+    handleUpdate("custom_sections", reordered);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="relative min-h-screen bg-white dark:bg-black flex items-center justify-center overflow-hidden">
@@ -290,6 +370,21 @@ export default function Dashboard() {
           onClose={() => setShowThemeCustomizer(false)}
         />
       )}
+
+      {editingSection && (
+        <SectionItemEditor
+          section={editingSection}
+          username={user?.username || ""}
+          onSave={(updatedSection) => {
+            const updatedSections = user?.custom_sections?.map(s =>
+              s.id === updatedSection.id ? updatedSection : s
+            ) || [];
+            handleUpdate("custom_sections", updatedSections);
+            setEditingSection(null);
+          }}
+          onClose={() => setEditingSection(null)}
+        />
+      )}
       
       <div className="relative min-h-screen bg-black flex overflow-hidden">
       <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]" />
@@ -316,7 +411,7 @@ export default function Dashboard() {
 
         {/* Navigation */}
         <nav className="flex-1 p-4">
-          {["overview", "analytics", "profile", "projects", "skills"].map((tab) => (
+          {["overview", "analytics", "profile", "projects", "skills", "social", "sections"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -326,7 +421,7 @@ export default function Dashboard() {
                   : "text-zinc-400 hover:text-white hover:bg-white/5"
               }`}
             >
-              {tab}
+              {tab === "social" ? "Social Links" : tab}
             </button>
           ))}
         </nav>
@@ -522,6 +617,30 @@ export default function Dashboard() {
     <option className="bg-black text-white" value="windows_xp">Windows XP</option>
   </select>
 </div>
+<div>
+  <label className="block text-sm font-medium text-white mb-2">
+    Portfolio Template
+  </label>
+  <select
+    defaultValue={user?.template_type || "conversational"}
+    onChange={(e) => handleUpdate("template_type", e.target.value)}
+    className="
+      w-full px-4 py-3
+      bg-black
+      border border-white/20
+      rounded-xl
+      text-white
+      focus:outline-none
+      focus:ring-2 focus:ring-blue-500
+    "
+  >
+    <option className="bg-black text-white" value="conversational">Conversational (Minimal)</option>
+    <option className="bg-black text-white" value="fullpage">Full Page (Dark)</option>
+    <option className="bg-black text-white" value="professional">Professional (White)</option>
+    <option className="bg-black text-white" value="modern">Modern (Glassmorphism)</option>
+  </select>
+  <p className="text-zinc-400 text-xs mt-2">Choose between minimal conversational style or traditional full-page portfolio</p>
+</div>
 
                 </div>
               </div>
@@ -596,10 +715,182 @@ export default function Dashboard() {
                 </div>
               </div>
             )}
+
+            {activeTab === "social" && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-white mb-6">Social Links</h2>
+                <p className="text-zinc-400 mb-6">Add your social media profiles and links. These will be displayed on your portfolio.</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[
+                    { key: "linkedin", label: "LinkedIn", icon: "💼", placeholder: "https://linkedin.com/in/username" },
+                    { key: "github", label: "GitHub", icon: "💻", placeholder: "https://github.com/username" },
+                    { key: "twitter", label: "Twitter / X", icon: "🐦", placeholder: "https://twitter.com/username" },
+                    { key: "instagram", label: "Instagram", icon: "📸", placeholder: "https://instagram.com/username" },
+                    { key: "facebook", label: "Facebook", icon: "👥", placeholder: "https://facebook.com/username" },
+                    { key: "youtube", label: "YouTube", icon: "📺", placeholder: "https://youtube.com/@username" },
+                    { key: "tiktok", label: "TikTok", icon: "🎵", placeholder: "https://tiktok.com/@username" },
+                    { key: "medium", label: "Medium", icon: "✍️", placeholder: "https://medium.com/@username" },
+                    { key: "dev", label: "Dev.to", icon: "👨‍💻", placeholder: "https://dev.to/username" },
+                    { key: "hashnode", label: "Hashnode", icon: "📝", placeholder: "https://hashnode.com/@username" },
+                    { key: "stackoverflow", label: "Stack Overflow", icon: "📚", placeholder: "https://stackoverflow.com/users/id" },
+                    { key: "dribbble", label: "Dribbble", icon: "🎨", placeholder: "https://dribbble.com/username" },
+                    { key: "behance", label: "Behance", icon: "🎭", placeholder: "https://behance.net/username" },
+                    { key: "figma", label: "Figma", icon: "🎯", placeholder: "https://figma.com/@username" },
+                    { key: "discord", label: "Discord", icon: "💬", placeholder: "username#0000" },
+                    { key: "telegram", label: "Telegram", icon: "✈️", placeholder: "https://t.me/username" },
+                    { key: "whatsapp", label: "WhatsApp", icon: "📱", placeholder: "+1234567890" },
+                    { key: "portfolio", label: "Portfolio Website", icon: "🌐", placeholder: "https://yourwebsite.com" },
+                    { key: "blog", label: "Blog", icon: "📰", placeholder: "https://yourblog.com" },
+                    { key: "website", label: "Personal Website", icon: "🏠", placeholder: "https://yoursite.com" },
+                  ].map((social) => (
+                    <div key={social.key} className="bg-white/5 border border-white/20 rounded-xl p-4">
+                      <label className="flex items-center gap-2 text-sm font-medium text-zinc-300 mb-2">
+                        <span className="text-2xl">{social.icon}</span>
+                        {social.label}
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          defaultValue={user?.social_links?.[social.key] || ""}
+                          placeholder={social.placeholder}
+                          onBlur={(e) => {
+                            const newLinks = { ...user?.social_links, [social.key]: e.target.value };
+                            handleUpdate("social_links", newLinks);
+                          }}
+                          className="flex-1 px-4 py-2 bg-white/5 border border-white/20 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        />
+                        {user?.social_links?.[social.key] && (
+                          <button
+                            onClick={() => {
+                              const newLinks = { ...user?.social_links };
+                              delete newLinks[social.key];
+                              handleUpdate("social_links", newLinks);
+                            }}
+                            className="px-3 py-2 bg-red-600/20 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors text-sm"
+                            title="Remove link"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === "sections" && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Custom Sections</h2>
+                    <p className="text-zinc-400 text-sm mt-1">Add custom sections to your portfolio</p>
+                  </div>
+                  <button 
+                    onClick={() => setShowAddSectionModal(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"
+                  >
+                    + Add Section
+                  </button>
+                </div>
+
+                {user?.custom_sections && user.custom_sections.length > 0 ? (
+                  <div className="space-y-4">
+                    {user.custom_sections.sort((a: any, b: any) => a.order - b.order).map((section: any) => (
+                      <div key={section.id} className="bg-white/5 border border-white/20 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <h3 className="text-white font-semibold">{section.title}</h3>
+                              <p className="text-zinc-400 text-sm capitalize">{section.type} • {section.items?.length || 0} items</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setEditingSection(section)}
+                              className="px-3 py-2 bg-blue-600/20 border border-blue-500/50 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-sm"
+                            >
+                              Manage Items
+                            </button>
+                            <button
+                              onClick={() => handleToggleSection(section.id)}
+                              className={`px-3 py-1 rounded-lg text-sm ${
+                                section.visible 
+                                  ? "bg-green-600/20 text-green-400 border border-green-500/50" 
+                                  : "bg-zinc-600/20 text-zinc-400 border border-zinc-500/50"
+                              }`}
+                            >
+                              {section.visible ? "Visible" : "Hidden"}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteSection(section.id)}
+                              className="px-3 py-2 bg-red-600/20 border border-red-500/50 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors text-sm"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-white/5 border border-white/20 rounded-xl">
+                    <p className="text-zinc-400 mb-4">No custom sections yet</p>
+                    <button 
+                      onClick={() => setShowAddSectionModal(true)}
+                      className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"
+                    >
+                      Add Your First Section
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>
     </div>
+
+      {showAddSectionModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="bg-black/90 border border-white/20 rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold text-white mb-6">Add New Section</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-2">Section Heading *</label>
+                <input
+                  type="text"
+                  value={newSectionData.type}
+                  onChange={(e) => setNewSectionData({ ...newSectionData, type: e.target.value })}
+                  placeholder="e.g., Education, Awards, Hobbies, Languages"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <p className="text-zinc-500 text-xs mt-1">This will be displayed as the section heading</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleAddSection}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all font-medium"
+              >
+                Create Section
+              </button>
+              <button
+                onClick={() => {
+                  setShowAddSectionModal(false);
+                  setNewSectionData({ type: "", title: "", content: "", image: "", link: "" });
+                }}
+                className="px-6 py-3 bg-white/5 border border-white/20 text-white rounded-xl hover:bg-white/10 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
