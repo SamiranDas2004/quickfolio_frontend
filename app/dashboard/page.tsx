@@ -411,7 +411,7 @@ export default function Dashboard() {
 
         {/* Navigation */}
         <nav className="flex-1 p-4">
-          {["overview", "analytics", "profile", "projects", "skills", "social", "sections"].map((tab) => (
+          {["overview", "analytics", "profile", "projects", "skills", "social", "sections", "train-ai"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -421,7 +421,7 @@ export default function Dashboard() {
                   : "text-zinc-400 hover:text-white hover:bg-white/5"
               }`}
             >
-              {tab === "social" ? "Social Links" : tab}
+              {tab === "social" ? "Social Links" : tab === "train-ai" ? "Train your AI" : tab}
             </button>
           ))}
         </nav>
@@ -845,6 +845,21 @@ export default function Dashboard() {
                     </button>
                   </div>
                 )}
+              </div>
+            )}
+
+            {activeTab === "train-ai" && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-2">Train your AI</h2>
+                  <p className="text-zinc-400 text-sm">Teach your AI assistant about yourself</p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
+                  <div className="text-6xl mb-4">🚀</div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Coming Soon</h3>
+                  <p className="text-zinc-400">This feature is under development and will be available soon!</p>
+                </div>
               </div>
             )}
           </div>

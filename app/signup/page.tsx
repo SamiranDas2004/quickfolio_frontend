@@ -117,7 +117,9 @@ function SignupContent() {
   };
 
   const handleSkip = () => {
-    alert("Redirecting to portfolio...");
+    if (window.confirm("⚠️ You'll need to manually add your information in the dashboard. Continue?")) {
+      router.push("/dashboard");
+    }
   };
 
   if (step === "upload") {
@@ -142,36 +144,49 @@ function SignupContent() {
 
             {!uploading && !extractedData && (
               <div className="space-y-6">
-                <div className="border-2 border-dashed border-zinc-700 rounded-2xl p-12 text-center hover:border-blue-500 transition-colors bg-zinc-800/50">
-                  <input
-                    type="file"
-                    accept=".pdf,.docx"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    id="resume-upload"
-                  />
-                  <label htmlFor="resume-upload" className="cursor-pointer">
-                    <div className="text-6xl mb-4">📄</div>
-                    <p className="text-white font-medium mb-2">
-                      {file ? file.name : "Click to upload resume"}
-                    </p>
-                    <p className="text-zinc-400 text-sm">PDF or DOCX (Max 10MB)</p>
-                  </label>
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+                  <div className="relative border-2 border-dashed border-zinc-700 rounded-2xl p-12 text-center hover:border-blue-500 transition-all duration-300 bg-zinc-800/50 backdrop-blur-sm cursor-pointer group-hover:bg-zinc-800/70">
+                    <input
+                      type="file"
+                      accept=".pdf,.docx"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      id="resume-upload"
+                    />
+                    <label htmlFor="resume-upload" className="cursor-pointer">
+                      <div className="text-7xl mb-6 animate-bounce-slow">📄</div>
+                      <p className="text-white font-semibold text-lg mb-3">
+                        {file ? file.name : "Click to upload resume"}
+                      </p>
+                      <p className="text-zinc-400 text-sm">PDF or DOCX (Max 10MB)</p>
+                      {!file && (
+                        <p className="text-blue-400 text-sm mt-4 font-medium">Drag & drop or click to browse</p>
+                      )}
+                    </label>
+                  </div>
                 </div>
 
-                {error && <p className="text-red-400 text-sm">{error}</p>}
+                {error && (
+                  <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-4 animate-shake">
+                    <p className="text-red-400 text-sm flex items-center gap-2">
+                      <span>⚠️</span>
+                      {error}
+                    </p>
+                  </div>
+                )}
 
                 <div className="flex gap-4">
                   <button
                     onClick={handleUpload}
                     disabled={!file}
-                    className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 px-6 rounded-xl hover:from-blue-500 hover:to-blue-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg shadow-lg hover:shadow-blue-500/50 hover:scale-105 active:scale-95 disabled:hover:scale-100"
                   >
-                    Upload & Process
+                     Upload & Process
                   </button>
                   <button
                     onClick={handleSkip}
-                    className="px-6 py-3 bg-zinc-800 border border-zinc-700 text-white rounded-xl hover:bg-zinc-700 transition-colors"
+                    className="px-8 py-4 bg-zinc-800 border-2 border-zinc-700 text-white rounded-xl hover:bg-zinc-700 hover:border-zinc-600 transition-all duration-300 font-semibold hover:scale-105 active:scale-95"
                   >
                     Skip
                   </button>
@@ -243,8 +258,8 @@ function SignupContent() {
         {/* Right Panel - Logo */}
         <div className="hidden lg:flex lg:w-1/2 bg-black items-center justify-center p-12">
           <div className="text-center max-w-2xl">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-white rounded-3xl mb-8">
-              <div className="text-4xl">📊</div>
+            <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-8">
+              <img src="/logo.png" alt="Quickfolio" className="w-20 h-20" />
             </div>
             <h1 className="text-white text-7xl font-bold mb-8">Quickfolio</h1>
             
@@ -277,8 +292,8 @@ function SignupContent() {
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-                <span className="text-xl">📊</span>
+              <div className="w-10 h-10  rounded-xl flex items-center justify-center">
+                <img src="/logo.png" alt="Quickfolio" className="w-6 h-6" />
               </div>
               <span className="text-white text-2xl font-bold">Quickfolio</span>
             </div>

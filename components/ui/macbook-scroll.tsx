@@ -154,7 +154,7 @@ export const Lid = ({
         <img
           src={src as string}
           alt="portfolio preview"
-          className="absolute inset-0 h-full w-full rounded-lg object-cover object-left-top"
+          className="absolute inset-0 h-full w-full rounded-lg object-cover object-center"
         />
       </motion.div>
     </div>

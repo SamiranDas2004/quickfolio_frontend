@@ -11,7 +11,7 @@ import { GoogleGeminiEffect } from "@/components/ui/google-gemini-effect";
 import { MacbookScroll } from "@/components/ui/macbook-scroll";
 import { MouseScroll } from "@/components/ui/mouse-scroll";
 import { useScroll, useTransform } from "motion/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Spotlight } from "@/components/ui/spotlight";
@@ -23,6 +23,7 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState("");
+  const [available, setAvailable] = useState<boolean | null>(null);
 
   const ref = React.useRef(null);
   const { scrollYProgress } = useScroll({
@@ -34,29 +35,44 @@ export default function Home() {
   const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.2]);
   const pathLengthThird = useTransform(scrollYProgress, [0, 0.8], [0.1, 1.2]);
 
+  useEffect(() => {
+    if (!username.trim()) {
+      setAvailable(null);
+      setError("");
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setChecking(true);
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/check-username/${username}`);
+        const data = await response.json();
+        setAvailable(data.available);
+        setError(data.available ? "" : "Username already taken");
+      } catch (err) {
+        setError("");
+      } finally {
+        setChecking(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [username]);
+
   const handleGetStarted = async () => {
     if (!username.trim()) {
       toast.error("Please enter a username");
       return;
     }
 
-    setChecking(true);
-    setError("");
+    if (available === false) {
+      toast.error("Username already taken");
+      return;
+    }
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/check-username/${username}`);
-      const data = await response.json();
-
-      if (data.available) {
-        toast.success("Username available! Redirecting...");
-        router.push(`/signup?username=${username}`);
-      } else {
-        toast.error("Username already taken");
-      }
-    } catch (err) {
-      toast.error("Network error. Please try again.");
-    } finally {
-      setChecking(false);
+    if (available === true) {
+      toast.success("Username available! Redirecting...");
+      router.push(`/signup?username=${username}`);
     }
   };
 
@@ -87,7 +103,7 @@ export default function Home() {
           
           <div className="flex items-center gap-2 sm:gap-4">
             <a href="/dashboard" className="text-sm text-zinc-400 hover:text-white">Dashboard</a>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500" />
+            <a href="/signup" className="text-sm text-zinc-400 hover:text-white">Sign Up</a>
           </div>
         </div>
       </header>
@@ -120,18 +136,23 @@ export default function Home() {
                 <div className="flex items-center rounded-full px-6 py-3 gap-4 max-w-md w-full">
                   <span className="text-base text-zinc-400">quickfolio.in/</span>
                   <input
-                    placeholder="your-name"
+                    placeholder="Type your-name here"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleGetStarted()}
                     className="bg-transparent outline-none text-white placeholder-zinc-400 flex-1"
                   />
+                  {username && (
+                    <span className="text-xl">
+                      {checking ? "⏳" : available ? "✓" : "✗"}
+                    </span>
+                  )}
                   <button
                     onClick={handleGetStarted}
-                    disabled={checking}
+                    disabled={checking || !available}
                     className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-zinc-200 transition disabled:opacity-50"
                   >
-                    {checking ? "..." : "→"}
+                    →
                   </button>
                 </div>
               </HoverBorderGradient>
@@ -164,8 +185,8 @@ export default function Home() {
             <Compare
               firstImage="/assests/banner.png"
               secondImage="/assests/c1.webp"
-              firstImageClassName="object-cover object-left-top w-full"
-              secondImageClassname="object-cover object-left-top w-full"
+              firstImageClassName="object-cover object-center w-full h-full"
+              secondImageClassname="object-cover object-center w-full h-full"
               className="w-full h-full rounded-[22px] md:rounded-lg"
               slideMode="hover"
               autoplay={true}
@@ -233,37 +254,37 @@ export default function Home() {
         </div>
         <div className="mx-auto max-w-7xl rounded-3xl bg-neutral-800 p-2 ring-1 ring-neutral-700/10 px-4">
           <ThreeDMarquee images={[
-            "https://assets.aceternity.com/cloudinary_bkp/3d-card.png",
-            "https://assets.aceternity.com/animated-modal.png",
-            "https://assets.aceternity.com/animated-testimonials.webp",
-            "https://assets.aceternity.com/cloudinary_bkp/Tooltip_luwy44.png",
-            "https://assets.aceternity.com/github-globe.png",
-            "https://assets.aceternity.com/glare-card.png",
-            "https://assets.aceternity.com/layout-grid.png",
-            "https://assets.aceternity.com/flip-text.png",
-            "https://assets.aceternity.com/hero-highlight.png",
-            "https://assets.aceternity.com/carousel.webp",
-            "https://assets.aceternity.com/placeholders-and-vanish-input.png",
-            "https://assets.aceternity.com/shooting-stars-and-stars-background.png",
-            "https://assets.aceternity.com/signup-form.png",
-            "https://assets.aceternity.com/cloudinary_bkp/stars_sxle3d.png",
-            "https://assets.aceternity.com/spotlight-new.webp",
-            "https://assets.aceternity.com/cloudinary_bkp/Spotlight_ar5jpr.png",
-            "https://assets.aceternity.com/cloudinary_bkp/Parallax_Scroll_pzlatw_anfkh7.png",
-            "https://assets.aceternity.com/tabs.png",
-            "https://assets.aceternity.com/cloudinary_bkp/Tracing_Beam_npujte.png",
-            "https://assets.aceternity.com/cloudinary_bkp/typewriter-effect.png",
-            "https://assets.aceternity.com/glowing-effect.webp",
-            "https://assets.aceternity.com/hover-border-gradient.png",
-            "https://assets.aceternity.com/cloudinary_bkp/Infinite_Moving_Cards_evhzur.png",
-            "https://assets.aceternity.com/cloudinary_bkp/Lamp_hlq3ln.png",
-            "https://assets.aceternity.com/macbook-scroll.png",
-            "https://assets.aceternity.com/cloudinary_bkp/Meteors_fye3ys.png",
-            "https://assets.aceternity.com/cloudinary_bkp/Moving_Border_yn78lv.png",
-            "https://assets.aceternity.com/multi-step-loader.png",
-            "https://assets.aceternity.com/vortex.png",
-            "https://assets.aceternity.com/wobble-card.png",
-            "https://assets.aceternity.com/world-map.webp",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
+            "/examples/4.png",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
+            "/examples/4.png",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
+            "/examples/4.png",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
+            "/examples/4.png",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
+            "/examples/4.png",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
+            "/examples/4.png",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
+            "/examples/4.png",
+            "/examples/1.png",
+            "/examples/2.png",
+            "/examples/3.png",
           ]} />
         </div>
       </section>
@@ -290,7 +311,7 @@ export default function Home() {
               See Your Portfolio <br /> Come to Life
             </span>
           }
-          src="/assests/banner.png"
+          src="/examples/1.png"
           showGradient={false}
         />
       </div>
