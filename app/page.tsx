@@ -117,7 +117,7 @@ export default function Home() {
           )}
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-        <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+        <Spotlight className="-top-20 left-1/2 -translate-x-1/2 md:left-60 md:-top-20 md:translate-x-0" fill="white" />
         
         <div className="relative z-20 w-full space-y-8 -mt-20">
           <div className="h-40 flex items-center justify-center overflow-visible px-4">
@@ -127,30 +127,30 @@ export default function Home() {
           <div className="text-center max-w-4xl mx-auto px-6">
             <TypewriterEffectSmooth words={words} className="text-5xl md:text-7xl" />
 
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-8 px-4">
               <HoverBorderGradient
-                containerClassName="rounded-full"
+                containerClassName="rounded-full w-full sm:w-auto"
                 as="div"
                 className="bg-black"
               >
-                <div className="flex items-center rounded-full px-6 py-3 gap-4 max-w-md w-full">
-                  <span className="text-base text-zinc-400">quickfolio.in/</span>
+                <div className="flex items-center rounded-full px-3 sm:px-6 py-2 sm:py-3 gap-2 sm:gap-4 max-w-md w-full">
+                  <span className="text-xs sm:text-base text-zinc-400 whitespace-nowrap">quickfolio.in/</span>
                   <input
-                    placeholder="Type your-name here"
+                    placeholder="your-name"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleGetStarted()}
-                    className="bg-transparent outline-none text-white placeholder-zinc-400 flex-1"
+                    className="bg-transparent outline-none text-white placeholder-zinc-400 flex-1 text-sm sm:text-base min-w-0"
                   />
                   {username && (
-                    <span className="text-xl">
+                    <span className="text-base sm:text-xl flex-shrink-0">
                       {checking ? "⏳" : available ? "✓" : "✗"}
                     </span>
                   )}
                   <button
                     onClick={handleGetStarted}
                     disabled={checking || !available}
-                    className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-zinc-200 transition disabled:opacity-50"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-zinc-200 transition disabled:opacity-50 flex-shrink-0"
                   >
                     →
                   </button>

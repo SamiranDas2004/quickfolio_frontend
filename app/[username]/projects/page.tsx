@@ -152,7 +152,7 @@ export default function ProjectsPage() {
         <div>
           {!isChatOpen ? (
             <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
-              <div className="bg-black/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg border border-white/20">
+              <div className="bg-black/90 backdrop-blur-sm text-white px-3 py-1.5 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm font-medium shadow-lg border border-white/20">
                 Ask About Projects
               </div>
               <button
