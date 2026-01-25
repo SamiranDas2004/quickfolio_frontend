@@ -15,14 +15,18 @@ export const FloatingDock = ({
   items,
   desktopClassName,
   mobileClassName,
+  hideLabels,
+  iconSize,
 }: {
   items: { title: string; icon: React.ReactNode; href: string }[];
   desktopClassName?: string;
   mobileClassName?: string;
+  hideLabels?: boolean;
+  iconSize?: "sm" | "md" | "lg";
 }) => {
   return (
     <>
-      <FloatingDockDesktop items={items} className={desktopClassName} />
+      <FloatingDockDesktop items={items} className={desktopClassName} hideLabels={hideLabels} iconSize={iconSize} />
       <FloatingDockMobile items={items} className={mobileClassName} />
     </>
   );
@@ -84,9 +88,13 @@ const FloatingDockMobile = ({
 const FloatingDockDesktop = ({
   items,
   className,
+  hideLabels,
+  iconSize = "lg",
 }: {
   items: { title: string; icon: React.ReactNode; href: string }[];
   className?: string;
+  hideLabels?: boolean;
+  iconSize?: "sm" | "md" | "lg";
 }) => {
   let mouseX = useMotionValue(Infinity);
   return (
@@ -99,7 +107,7 @@ const FloatingDockDesktop = ({
       )}
     >
       {items.map((item) => (
-        <IconContainer mouseX={mouseX} key={item.title} {...item} />
+        <IconContainer mouseX={mouseX} key={item.title} {...item} hideLabel={hideLabels} iconSize={iconSize} />
       ))}
     </motion.div>
   );
@@ -110,11 +118,15 @@ function IconContainer({
   title,
   icon,
   href,
+  hideLabel,
+  iconSize = "lg",
 }: {
   mouseX: MotionValue;
   title: string;
   icon: React.ReactNode;
   href: string;
+  hideLabel?: boolean;
+  iconSize?: "sm" | "md" | "lg";
 }) {
   let ref = useRef<HTMLDivElement>(null);
 
@@ -123,10 +135,18 @@ function IconContainer({
     return val - bounds.x - bounds.width / 2;
   });
 
-  let widthTransform = useTransform(distance, [-150, 0, 150], [70, 110, 70]);
-  let heightTransform = useTransform(distance, [-150, 0, 150], [70, 110, 70]);
-  let widthTransformIcon = useTransform(distance, [-150, 0, 150], [40, 60, 40]);
-  let heightTransformIcon = useTransform(distance, [-150, 0, 150], [40, 60, 40]);
+  const sizes = {
+    sm: { base: [40, 60, 40], hover: [40, 60, 40], icon: [20, 30, 20] },
+    md: { base: [55, 85, 55], hover: [55, 85, 55], icon: [30, 45, 30] },
+    lg: { base: [70, 110, 70], hover: [70, 110, 70], icon: [40, 60, 40] },
+  };
+
+  const sizeConfig = sizes[iconSize];
+
+  let widthTransform = useTransform(distance, [-150, 0, 150], sizeConfig.base);
+  let heightTransform = useTransform(distance, [-150, 0, 150], sizeConfig.base);
+  let widthTransformIcon = useTransform(distance, [-150, 0, 150], sizeConfig.icon);
+  let heightTransformIcon = useTransform(distance, [-150, 0, 150], sizeConfig.icon);
 
   let width = useSpring(widthTransform, { mass: 0.1, stiffness: 150, damping: 12 });
   let height = useSpring(heightTransform, { mass: 0.1, stiffness: 150, damping: 12 });
@@ -151,7 +171,7 @@ function IconContainer({
           {icon}
         </motion.div>
       </motion.div>
-      <span className="text-xs text-neutral-400">{title}</span>
+      {!hideLabel && <span className="text-xs text-neutral-400">{title}</span>}
     </a>
   );
 }

@@ -370,6 +370,9 @@ export default function Home() {
             
             <div className="md:ml-auto">
               <FloatingDock
+                desktopClassName="[&>div]:h-12 [&>div]:w-12"
+                hideLabels={true}
+                iconSize="sm"
                 items={[
                   {
                     title: "Website",
