@@ -32,6 +32,7 @@ export default function ProjectsPage() {
   const [sending, setSending] = useState(false);
   const [bgType, setBgType] = useState<"ripple" | "beams" | "lines">("ripple");
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -117,14 +118,15 @@ export default function ProjectsPage() {
     );
   }
 
-  const slides = projects.map(project => ({
+  const slides = projects.map((project, index) => ({
     title: project.title,
-    button: project.live_url ? "View Live" : "View on GitHub",
+    button: project.live_url ? "View Live" : (project.github_url ? "View on GitHub" : ""),
     src: project.image_url || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800",
     description: project.description,
     tech_stack: project.tech_stack,
     github_url: project.github_url,
-    live_url: project.live_url
+    live_url: project.live_url,
+    onClick: () => setSelectedProject(projects[index])
   }));
 
   return (
@@ -254,6 +256,75 @@ export default function ProjectsPage() {
             </div>
           )}
         </div>
+
+        {/* Project Modal */}
+        {selectedProject && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedProject(null)}>
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden m-4 animate-scale-in" onClick={(e) => e.stopPropagation()}>
+              <div className="relative overflow-hidden">
+                {selectedProject.image_url && (
+                  <img src={selectedProject.image_url} alt={selectedProject.title} className="w-full h-72 object-cover" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="absolute top-4 right-4 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                >
+                  <svg className="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="p-8 max-h-[calc(90vh-18rem)] overflow-y-auto" style={{scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,0,0,0.2) transparent'} as React.CSSProperties}>
+                <h2 className="text-4xl font-bold text-black mb-6">{selectedProject.title}</h2>
+                
+                {selectedProject.description && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Description</h3>
+                    <p className="text-black text-lg leading-relaxed">{selectedProject.description}</p>
+                  </div>
+                )}
+                
+                {selectedProject.tech_stack && selectedProject.tech_stack.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Tech Stack</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProject.tech_stack.map((tech, idx) => (
+                        <span key={idx} className="px-4 py-2 bg-black text-white rounded-full text-sm font-medium">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex gap-3">
+                  {selectedProject.live_url && (
+                    <a
+                      href={selectedProject.live_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 px-6 py-4 bg-black text-white rounded-xl text-center font-semibold hover:bg-black/90 transition-all hover:scale-105 active:scale-95"
+                    >
+                      View Live →
+                    </a>
+                  )}
+                  {selectedProject.github_url && (
+                    <a
+                      href={selectedProject.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 px-6 py-4 bg-black/10 text-black rounded-xl text-center font-semibold hover:bg-black/20 transition-all hover:scale-105 active:scale-95"
+                    >
+                      GitHub →
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
