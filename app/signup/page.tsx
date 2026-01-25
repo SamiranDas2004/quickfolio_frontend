@@ -219,7 +219,7 @@ function SignupContent() {
                       />
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(`http://localhost:3000/${formData.username}`);
+                          navigator.clipboard.writeText(`https://quickfolio.in/${formData.username}`);
                           toast.success("URL copied!");
                         }}
                         className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
@@ -227,7 +227,7 @@ function SignupContent() {
                         Copy
                       </button>
                       <button
-                        onClick={() => window.open(`http://localhost:3000/${formData.username}`, "_blank")}
+                        onClick={() => window.open(`https://quickfolio.in/${formData.username}`, "_blank")}
                         className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium"
                       >
                         Open
