@@ -3,12 +3,116 @@ import { cn } from "@/lib/utils";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { motion } from "motion/react";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function PricingPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      const username = localStorage.getItem("username");
+      if (username) {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`)
+          .then(res => res.json())
+          .then(data => setUserId(data.id))
+          .catch(() => {});
+      }
+    }
+  }, []);
+
+  const handlePayment = async (planName: string, amount: number) => {
+    if (!userId) {
+      toast.error("Please login first");
+      router.push("/signup");
+      return;
+    }
+
+    if (amount === 0) {
+      router.push("/dashboard");
+      return;
+    }
+
+    setLoading(planName);
+
+    try {
+      const orderRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/payment/create-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, plan_name: planName }),
+      });
+
+      const orderData = await orderRes.json();
+
+      const options = {
+        key: orderData.key_id,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Quickfolio",
+        description: `${planName} Plan Subscription`,
+        order_id: orderData.order_id,
+        handler: async function (response: any) {
+          try {
+            const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/payment/verify-payment`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                user_id: userId,
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+
+            if (verifyData.success) {
+              toast.success("Payment successful! Upgraded to " + planName);
+              router.push("/dashboard");
+            } else {
+              toast.error("Payment verification failed");
+            }
+          } catch (error) {
+            toast.error("Payment verification failed");
+          }
+        },
+        prefill: {
+          name: "",
+          email: "",
+        },
+        theme: {
+          color: "#3b82f6",
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      toast.error("Failed to create order");
+    } finally {
+      setLoading(null);
+    }
+  };
   const plans = [
     {
       name: "Starter",
       price: "Free",
+      amount: 0,
       description: "Perfect for getting started",
       features: [
         "Basic AI portfolio generation",
@@ -26,7 +130,8 @@ export default function PricingPage() {
     },
     {
       name: "Pro",
-      price: "$5",
+      price: "₹500",
+      amount: 500,
       period: "/month",
       description: "For professionals and freelancers",
       features: [
@@ -46,7 +151,8 @@ export default function PricingPage() {
     },
     {
       name: "Premium",
-      price: "$15",
+      price: "₹1500",
+      amount: 1500,
       period: "/month",
       description: "For executives and personal brands",
       features: [
@@ -141,6 +247,7 @@ export default function PricingPage() {
                   <HoverBorderGradient
                     containerClassName="rounded-full w-full"
                     as="button"
+                    onClick={() => handlePayment(plan.name, plan.amount)}
                     className={cn(
                       "w-full text-center py-3 font-semibold",
                       plan.popular
@@ -148,7 +255,7 @@ export default function PricingPage() {
                         : "bg-black text-white"
                     )}
                   >
-                    {plan.cta}
+                    {loading === plan.name ? "Processing..." : plan.cta}
                   </HoverBorderGradient>
                 </div>
 
