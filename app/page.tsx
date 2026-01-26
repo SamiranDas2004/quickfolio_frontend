@@ -125,7 +125,9 @@ export default function Home() {
           </div>
           
           <div className="text-center max-w-4xl mx-auto px-6">
-            <TypewriterEffectSmooth words={words} className="text-5xl md:text-7xl" />
+            <div className="flex justify-center">
+              <TypewriterEffectSmooth words={words} className="text-5xl md:text-7xl" />
+            </div>
 
             <div className="flex justify-center mt-8 px-4">
               <HoverBorderGradient

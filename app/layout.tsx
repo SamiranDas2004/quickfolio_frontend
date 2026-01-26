@@ -16,11 +16,51 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quickfolio - AI-Powered Portfolio Builder",
-  description: "Create stunning AI-powered portfolios in minutes",
+  title: "Quickfolio - AI-Powered Portfolio Builder | Create Your Professional Portfolio",
+  description: "Build stunning AI-powered portfolios in minutes. Showcase your projects, skills, and experience with our intelligent portfolio builder. Stand out from the crowd with Quickfolio.",
+  keywords: ["portfolio builder", "AI portfolio", "professional portfolio", "developer portfolio", "online resume", "portfolio website", "AI-powered", "quickfolio"],
+  authors: [{ name: "Quickfolio" }],
+  creator: "Quickfolio",
+  publisher: "Quickfolio",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://quickfolio.in",
+    title: "Quickfolio - AI-Powered Portfolio Builder",
+    description: "Build stunning AI-powered portfolios in minutes. Showcase your projects, skills, and experience.",
+    siteName: "Quickfolio",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Quickfolio - AI-Powered Portfolio Builder",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quickfolio - AI-Powered Portfolio Builder",
+    description: "Build stunning AI-powered portfolios in minutes",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -32,6 +72,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/logo.png" />
+        <link rel="canonical" href="https://quickfolio.in" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
