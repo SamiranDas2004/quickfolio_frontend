@@ -69,7 +69,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-gray-300 relative overflow-hidden" style={{ fontFamily: 'var(--font-jetbrains-mono), "Courier New", monospace' }}>
       {/* Line numbers column - Fixed */}
-      <div className="fixed left-0 top-0 bottom-0 w-16 bg-[#0a0a0a] border-r border-gray-800 z-40 overflow-hidden">
+      <div className="hidden lg:block fixed left-0 top-0 bottom-0 w-16 bg-[#0a0a0a] border-r border-gray-800 z-40 overflow-hidden">
         <div className="pt-32 pb-20">
           {lineNumbers.map((num) => (
             <div
@@ -84,19 +84,16 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
 
       {/* Top Navigation Bar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a] border-b border-gray-800">
-        <div className="flex items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-6 ml-16">
-            <button className="text-sm text-gray-400 hover:text-white transition-colors px-3 py-1 rounded hover:bg-gray-800">
-              Welcome to my world!
+        <div className="flex items-center justify-between px-4 lg:px-6 py-3">
+          <div className="flex items-center gap-2 lg:gap-6 lg:ml-16">
+            <button className="text-xs lg:text-sm text-gray-400 hover:text-white transition-colors px-2 lg:px-3 py-1 rounded hover:bg-gray-800">
+              Welcome!
             </button>
-            <button className="text-sm text-white bg-gray-800 px-3 py-1 rounded border-b-2 border-blue-500">
+            <button className="text-xs lg:text-sm text-white bg-gray-800 px-2 lg:px-3 py-1 rounded border-b-2 border-blue-500">
               {user.username || "username"}.info
             </button>
-            {/* <button className="text-sm text-gray-400 hover:text-white transition-colors px-3 py-1 rounded hover:bg-gray-800">
-              work.done
-            </button> */}
           </div>
-          <div className="flex items-center gap-6 text-xs">
+          <div className="hidden md:flex items-center gap-6 text-xs">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
               <span className="text-gray-400">Open to new work</span>
@@ -106,7 +103,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
       </nav>
 
       {/* Sidebar */}
-      <aside className="fixed left-16 top-16 bottom-0 w-64 bg-[#0a0a0a] border-r border-gray-800 z-30 overflow-y-auto">
+      <aside className="hidden lg:block fixed left-16 top-16 bottom-0 w-64 bg-[#0a0a0a] border-r border-gray-800 z-30 overflow-y-auto">
         <div className="p-6 space-y-6">
           {/* Profile */}
           <div className="flex items-start gap-4">
@@ -174,7 +171,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
       </aside>
 
       {/* Right Sidebar - Index */}
-      <aside className="fixed right-0 top-16 bottom-0 w-48 bg-[#0a0a0a] border-l border-gray-800 z-30 overflow-y-auto">
+      <aside className="hidden lg:block fixed right-0 top-16 bottom-0 w-48 bg-[#0a0a0a] border-l border-gray-800 z-30 overflow-y-auto">
         <div className="p-6">
           <h3 className="text-white text-sm font-semibold mb-6">Index</h3>
           <nav className="space-y-3">
@@ -203,7 +200,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
       </aside>
 
       {/* Main Content */}
-      <main className="ml-80 mr-48 pt-24 pb-20">
+      <main className="lg:ml-80 lg:mr-48 pt-24 pb-20">
         {/* Hero Section */}
         <section 
           id="home" 
@@ -216,7 +213,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
           <div className="w-full">
             <div className="mb-12">
               <div className="text-gray-600 text-xs mb-4">{"<!-- Hero Section -->"}</div>
-              <h1 className="text-7xl lg:text-8xl font-bold mb-6 leading-none">
+              <h1 className="text-5xl lg:text-7xl xl:text-8xl font-bold mb-6 leading-none">
                 <span className="text-white">software</span>
                 <br />
                 <span className="text-gray-500">Developer</span>
@@ -322,7 +319,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             <div className="mb-12">
               <div className="text-gray-600 text-xs mb-4">{"<!-- About me section -->"}</div>
               <div className="flex items-center gap-8 mb-8">
-                <h2 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-700">
+                <h2 className="text-4xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-700">
                   SINCE BEGINNING
                 </h2>
               </div>
@@ -469,7 +466,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
           <div className="w-full">
             <div className="mb-12">
               <div className="text-gray-600 text-xs mb-4">{"<!-- Get in Touch -->"}</div>
-              <h2 className="text-5xl font-bold text-white mb-8">Let's Connect</h2>
+              <h2 className="text-3xl lg:text-5xl font-bold text-white mb-8">Let's Connect</h2>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
