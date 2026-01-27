@@ -10,9 +10,10 @@ import ModernPortfolio from "@/components/ModernPortfolio";
 import TerminalStyle from "@/components/TerminalStyle";
 import { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
+  const { username } = await params;
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${params.username}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`, {
       next: { revalidate: 3600 }
     });
     
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: { params: { username: string 
       openGraph: {
         title: `${user.name} - ${user.title || 'Portfolio'}`,
         description: user.bio || `Check out ${user.name}'s professional portfolio`,
-        url: `https://quickfolio.in/${params.username}`,
+        url: `https://quickfolio.in/${username}`,
         siteName: 'Quickfolio',
         images: [{ url: user.avatar_url || '/avatar.png', width: 1200, height: 630, alt: `${user.name}'s Portfolio` }],
         type: 'profile',
@@ -42,15 +43,15 @@ export async function generateMetadata({ params }: { params: { username: string 
         description: user.bio || `Check out ${user.name}'s professional portfolio`,
         images: [user.avatar_url || '/avatar.png'],
       },
-      alternates: { canonical: `https://quickfolio.in/${params.username}` },
+      alternates: { canonical: `https://quickfolio.in/${username}` },
     };
   } catch {
     return { title: 'Portfolio | Quickfolio', description: 'Professional portfolio on Quickfolio' };
   }
 }
 
-export default async function UserPortfolio({ params }: { params: { username: string } }) {
-  const username = params.username;
+export default async function UserPortfolio({ params }: { params: Promise<{ username: string }> }) {
+  const { username } = await params;
   let user: User | null = null;
   let loading = false;
 
