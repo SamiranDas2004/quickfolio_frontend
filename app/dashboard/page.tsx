@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [credentials, setCredentials] = useState({ identifier: "", password: "" });
   const [activeTab, setActiveTab] = useState("overview");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -68,16 +68,29 @@ export default function Dashboard() {
         body: JSON.stringify(credentials),
       });
       
+      const data = await response.json();
+      
       if (response.ok) {
-        const data = await response.json();
         localStorage.setItem("token", data.access_token);
-        localStorage.setItem("username", credentials.username);
-        await fetchUserData(credentials.username, data.access_token);
+        
+        // Get username from user object or fetch user data with token
+        if (data.user?.username) {
+          localStorage.setItem("username", data.user.username);
+          await fetchUserData(data.user.username, data.access_token);
+        } else {
+          // Fallback: decode token to get username or use identifier if it's a username
+          const username = credentials.identifier.includes('@') ? '' : credentials.identifier;
+          if (username) {
+            localStorage.setItem("username", username);
+            await fetchUserData(username, data.access_token);
+          }
+        }
         toast.success("Welcome back!");
       } else {
-        toast.error("Invalid credentials");
+        toast.error(data.detail || "Invalid credentials");
       }
     } catch (error) {
+      console.error("Login error:", error);
       toast.error("Login failed. Please try again.");
     } finally {
       setLoading(false);
@@ -284,9 +297,9 @@ export default function Dashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="relative min-h-screen bg-white dark:bg-black flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]" />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black" />
+      <div className="relative min-h-screen bg-black flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]" />
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
         
         <div className="relative z-10 bg-black/50 backdrop-blur-xl p-10 rounded-3xl border border-white/20 shadow-2xl w-full max-w-md">
           <div className="text-center mb-8">
@@ -296,11 +309,12 @@ export default function Dashboard() {
           
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-2">Username</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-2">Username or Email</label>
               <input
                 type="text"
-                value={credentials.username}
-                onChange={(e) => setCredentials({...credentials, username: e.target.value})}
+                value={credentials.identifier}
+                onChange={(e) => setCredentials({...credentials, identifier: e.target.value})}
+                placeholder="johndoe or m@example.com"
                 className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
