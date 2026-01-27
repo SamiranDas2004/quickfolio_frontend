@@ -214,9 +214,9 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             <div className="mb-12">
               <div className="text-gray-600 text-xs mb-4">{"<!-- Hero Section -->"}</div>
               <h1 className="text-5xl lg:text-7xl xl:text-8xl font-bold mb-6 leading-none">
-                <span className="text-white">software</span>
+                <span className="text-white">{user.title?.split(' ')[0] || "software"}</span>
                 <br />
-                <span className="text-gray-500">Developer</span>
+                <span className="text-gray-500">{user.title?.split(' ').slice(1).join(' ') || "Developer"}</span>
               </h1>
               <div className="border-l-4 border-gray-700 pl-6 mt-8">
                 <p className="text-base text-gray-400 leading-relaxed max-w-2xl">
