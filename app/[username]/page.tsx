@@ -10,6 +10,7 @@ import { LoaderFive } from "@/components/ui/loader";
 import FullPagePortfolio from "@/components/FullPagePortfolio";
 import ProfessionalPortfolio from "@/components/ProfessionalPortfolio";
 import ModernPortfolio from "@/components/ModernPortfolio";
+import TerminalStyle from "@/components/TerminalStyle";
 
 export default function UserPortfolio() {
   const params = useParams();
@@ -71,6 +72,11 @@ export default function UserPortfolio() {
   // Render modern template if selected
   if (user.template_type === "modern") {
     return <ModernPortfolio user={user} />;
+  }
+
+  // Render terminal template if selected
+  if (user.template_type === "terminal") {
+    return <TerminalStyle user={user} />;
   }
 
   // Render conversational template (default)
