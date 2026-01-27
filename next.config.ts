@@ -8,7 +8,11 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
+  compress: true,
+  poweredByHeader: false,
+  generateEtags: true,
 };
 
 export default nextConfig;

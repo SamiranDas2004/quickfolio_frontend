@@ -1,0 +1,27 @@
+{
+  "name": "Quickfolio - AI-Powered Portfolio Builder",
+  "short_name": "Quickfolio",
+  "description": "Build stunning AI-powered portfolios in minutes. Showcase your projects, skills, and experience with our intelligent portfolio builder.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business", "education"],
+  "lang": "en-US",
+  "dir": "ltr"
+}

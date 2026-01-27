@@ -1,0 +1,8 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+# Sitemaps
+Sitemap: https://quickfolio.in/sitemap.xml

@@ -1,52 +1,71 @@
-"use client";
 import Image from "next/image";
 import { SharedBackground, getTextColor, getSecondaryTextColor } from "@/components/SharedBackground";
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
-import { useState, useEffect } from "react";
 import { User } from "@/types/user";
-import { useParams } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import { LoaderFive } from "@/components/ui/loader";
 import FullPagePortfolio from "@/components/FullPagePortfolio";
 import ProfessionalPortfolio from "@/components/ProfessionalPortfolio";
 import ModernPortfolio from "@/components/ModernPortfolio";
 import TerminalStyle from "@/components/TerminalStyle";
+import { Metadata } from 'next';
 
-export default function UserPortfolio() {
-  const params = useParams();
-  const username = params.username as string;
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [backgroundType, setBackgroundType] = useState<"ripple" | "beams" | "lines" | "birds" | "globe" | "halo" | "dots" | "clouds" | "clouds1" | "rings" | "vortex" | "blackpanther" | "evil_linux" | "linux" | "windows_xp">("ripple");
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`);
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-          setBackgroundType(userData.background_preference);
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (username) {
-      fetchUser();
+export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${params.username}`, {
+      next: { revalidate: 3600 }
+    });
+    
+    if (!response.ok) {
+      return {
+        title: 'Portfolio Not Found | Quickfolio',
+        description: 'This portfolio does not exist on Quickfolio.',
+      };
     }
-  }, [username]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
-        <LoaderFive text="Loading Portfolio" />
-      </div>
-    );
+    
+    const user = await response.json();
+    
+    return {
+      title: `${user.name} - ${user.title || 'Portfolio'} | Quickfolio`,
+      description: user.bio || `Check out ${user.name}'s professional portfolio on Quickfolio. View projects, skills, and experience.`,
+      openGraph: {
+        title: `${user.name} - ${user.title || 'Portfolio'}`,
+        description: user.bio || `Check out ${user.name}'s professional portfolio`,
+        url: `https://quickfolio.in/${params.username}`,
+        siteName: 'Quickfolio',
+        images: [{ url: user.avatar_url || '/avatar.png', width: 1200, height: 630, alt: `${user.name}'s Portfolio` }],
+        type: 'profile',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${user.name} - ${user.title || 'Portfolio'}`,
+        description: user.bio || `Check out ${user.name}'s professional portfolio`,
+        images: [user.avatar_url || '/avatar.png'],
+      },
+      alternates: { canonical: `https://quickfolio.in/${params.username}` },
+    };
+  } catch {
+    return { title: 'Portfolio | Quickfolio', description: 'Professional portfolio on Quickfolio' };
   }
+}
+
+export default async function UserPortfolio({ params }: { params: { username: string } }) {
+  const username = params.username;
+  let user: User | null = null;
+  let loading = false;
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`, {
+      next: { revalidate: 3600 }
+    });
+    if (response.ok) {
+      user = await response.json();
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+
+
 
   if (!user) {
     return (
@@ -60,24 +79,26 @@ export default function UserPortfolio() {
   }
 
   // Render full-page template if selected
-  if (user.template_type === "fullpage") {
+  if (user?.template_type === "fullpage") {
     return <FullPagePortfolio user={user} />;
   }
 
   // Render professional template if selected
-  if (user.template_type === "professional") {
+  if (user?.template_type === "professional") {
     return <ProfessionalPortfolio user={user} />;
   }
 
   // Render modern template if selected
-  if (user.template_type === "modern") {
+  if (user?.template_type === "modern") {
     return <ModernPortfolio user={user} />;
   }
 
   // Render terminal template if selected
-  if (user.template_type === "terminal") {
+  if (user?.template_type === "terminal") {
     return <TerminalStyle user={user} />;
   }
+
+  const backgroundType = user?.background_preference || "ripple";
 
   // Render conversational template (default)
   return (
@@ -90,8 +111,8 @@ export default function UserPortfolio() {
           <div className="mb-8">
             <div className="w-40 h-40 mx-auto rounded-full overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
               <Image
-                src={user.avatar_url || "/avatar.png"}
-                alt={user.name}
+                src={user?.avatar_url || "/avatar.png"}
+                alt={user?.name || "User"}
                 width={160}
                 height={160}
                 className="w-full h-full object-cover"
@@ -99,13 +120,13 @@ export default function UserPortfolio() {
             </div>
           </div>
           <div className="h-40 w-full flex items-center justify-center overflow-visible px-8">
-            <TextHoverEffect text={user.name} />
+            <TextHoverEffect text={user?.name || "User"} />
           </div>
           <p className={`text-xl md:text-2xl ${getTextColor(backgroundType)}`}>
-            {user.title}
+            {user?.title}
           </p>
           <p className={`text-lg max-w-2xl mx-auto ${getSecondaryTextColor(backgroundType)}`}>
-            {user.bio}
+            {user?.bio}
           </p>
           <Navigation username={username} currentPage="/" />
         </div>

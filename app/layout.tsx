@@ -22,18 +22,27 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quickfolio - AI-Powered Portfolio Builder | Create Your Professional Portfolio",
-  description: "Build stunning AI-powered portfolios in minutes. Showcase your projects, skills, and experience with our intelligent portfolio builder. Stand out from the crowd with Quickfolio.",
-  keywords: ["portfolio builder", "AI portfolio", "professional portfolio", "developer portfolio", "online resume", "portfolio website", "AI-powered", "quickfolio"],
-  authors: [{ name: "Quickfolio" }],
+  metadataBase: new URL('https://quickfolio.in'),
+  title: {
+    default: "Quickfolio - AI-Powered Portfolio Builder | Create Your Professional Portfolio in Minutes",
+    template: "%s | Quickfolio"
+  },
+  description: "Build stunning AI-powered portfolios in minutes. Showcase your projects, skills, and experience with our intelligent portfolio builder. Stand out from the crowd with Quickfolio. Free to start!",
+  keywords: ["portfolio builder", "AI portfolio", "professional portfolio", "developer portfolio", "online resume", "portfolio website", "AI-powered", "quickfolio", "personal website builder", "resume builder", "portfolio generator", "online portfolio", "web portfolio", "digital portfolio", "creative portfolio"],
+  authors: [{ name: "Quickfolio", url: "https://quickfolio.in" }],
   creator: "Quickfolio",
   publisher: "Quickfolio",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://quickfolio.in",
-    title: "Quickfolio - AI-Powered Portfolio Builder",
-    description: "Build stunning AI-powered portfolios in minutes. Showcase your projects, skills, and experience.",
+    title: "Quickfolio - AI-Powered Portfolio Builder | Create Your Professional Portfolio",
+    description: "Build stunning AI-powered portfolios in minutes. Showcase your projects, skills, and experience with our intelligent portfolio builder.",
     siteName: "Quickfolio",
     images: [
       {
@@ -47,8 +56,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Quickfolio - AI-Powered Portfolio Builder",
-    description: "Build stunning AI-powered portfolios in minutes",
+    description: "Build stunning AI-powered portfolios in minutes. Free to start!",
     images: ["/logo.png"],
+    creator: "@SamiranDas2004",
+    site: "@SamiranDas2004",
   },
   robots: {
     index: true,
@@ -67,6 +78,13 @@ export const metadata: Metadata = {
     apple: "/logo.png",
   },
   manifest: "/manifest.json",
+  alternates: {
+    canonical: "https://quickfolio.in",
+  },
+  verification: {
+    google: "your-google-verification-code",
+  },
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -79,8 +97,12 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/logo.png" />
         <link rel="canonical" href="https://quickfolio.in" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="theme-color" content="#000000" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} antialiased`}
