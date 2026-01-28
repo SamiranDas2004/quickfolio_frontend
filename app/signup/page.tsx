@@ -36,13 +36,11 @@ function SignupContent() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.access_token);
-        localStorage.setItem("username", formData.username);
         toast.success("Account created successfully!");
         setStep("upload");
       } else {
@@ -83,16 +81,13 @@ function SignupContent() {
     formDataUpload.append("file", file);
 
     try {
-      const token = localStorage.getItem("token");
-      const username = formData.username;
-      
       const progressInterval = setInterval(() => {
         setProgress((prev) => Math.min(prev + 10, 90));
       }, 300);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-resume/${username}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-resume/${formData.username}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
         body: formDataUpload,
       });
 
@@ -103,6 +98,9 @@ function SignupContent() {
         const data = await response.json();
         setExtractedData(data.extracted_data || { name: formData.name });
         toast.success("Resume processed successfully!");
+      } else if (response.status === 401) {
+        toast.error("Session expired. Please login again.");
+        window.location.href = "/login";
       } else {
         const data = await response.json();
         setError(data.detail || "Upload failed");

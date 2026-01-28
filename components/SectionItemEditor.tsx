@@ -83,12 +83,11 @@ export default function SectionItemEditor({ section, onSave, onClose, username }
     
     setUploadingImage(true);
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-project-image/${username}`,
         {
           method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
           body: formData,
         }
       );
@@ -97,6 +96,9 @@ export default function SectionItemEditor({ section, onSave, onClose, username }
         const data = await response.json();
         setEditingItem({ ...editingItem, image_url: data.image_url });
         toast.success("Image uploaded");
+      } else if (response.status === 401) {
+        toast.error("Session expired. Please login again.");
+        window.location.href = "/login";
       } else {
         toast.error("Image upload failed");
       }

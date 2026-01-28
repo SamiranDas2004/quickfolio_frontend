@@ -24,17 +24,30 @@ export default function Dashboard() {
   const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
-    if (token && username) {
-      fetchUserData(username, token);
-    }
+    checkAuth();
   }, []);
 
-  const fetchUserData = async (username: string, token: string) => {
+  const checkAuth = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/me`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const userData = await response.json();
+        await fetchUserData(userData.username);
+      } else if (response.status === 401) {
+        // Token expired or invalid, redirect to login
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+    }
+  };
+
+  const fetchUserData = async (username: string) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (response.ok) {
         const userData = await response.json();
@@ -43,15 +56,18 @@ export default function Dashboard() {
         
         // Fetch analytics
         const analyticsResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/analytics/${username}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
         });
         if (analyticsResponse.ok) {
           const analyticsData = await analyticsResponse.json();
           setAnalytics(analyticsData);
+        } else if (analyticsResponse.status === 401) {
+          window.location.href = "/login";
         }
+      } else if (response.status === 401) {
+        window.location.href = "/login";
       } else {
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
+        setIsAuthenticated(false);
       }
     } catch (error) {
       console.error("Failed to fetch user:", error);
@@ -65,26 +81,14 @@ export default function Dashboard() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(credentials),
       });
       
       const data = await response.json();
       
       if (response.ok) {
-        localStorage.setItem("token", data.access_token);
-        
-        // Get username from user object or fetch user data with token
-        if (data.user?.username) {
-          localStorage.setItem("username", data.user.username);
-          await fetchUserData(data.user.username, data.access_token);
-        } else {
-          // Fallback: decode token to get username or use identifier if it's a username
-          const username = credentials.identifier.includes('@') ? '' : credentials.identifier;
-          if (username) {
-            localStorage.setItem("username", username);
-            await fetchUserData(username, data.access_token);
-          }
-        }
+        await fetchUserData(data.user.username);
         toast.success("Welcome back!");
       } else {
         toast.error(data.detail || "Invalid credentials");
@@ -97,10 +101,16 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
     toast.success("Logged out successfully");
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -109,13 +119,10 @@ export default function Dashboard() {
     if (!user) return;
     console.log("Updating field:", field, "with value:", JSON.stringify(value, null, 2));
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.username}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ [field]: value }),
       });
       
@@ -124,6 +131,9 @@ export default function Dashboard() {
         console.log("Updated user:", updated);
         setUser(updated);
         toast.success("Profile updated successfully");
+      } else if (response.status === 401) {
+        toast.error("Session expired. Please login again.");
+        window.location.href = "/login";
       } else {
         const error = await response.text();
         console.error("Update failed:", error);
@@ -142,11 +152,10 @@ export default function Dashboard() {
     formData.append("file", croppedImage, "avatar.jpg");
     
     try {
-      const token = localStorage.getItem("token");
       toast.loading("Uploading avatar...", { id: "avatar" });
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-avatar/${user.username}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
         body: formData,
       });
       
@@ -154,6 +163,9 @@ export default function Dashboard() {
         const data = await response.json();
         setUser({ ...user, avatar_url: data.avatar_url });
         toast.success("Avatar updated successfully", { id: "avatar" });
+      } else if (response.status === 401) {
+        toast.error("Session expired. Please login again.", { id: "avatar" });
+        window.location.href = "/login";
       } else {
         toast.error("Avatar upload failed", { id: "avatar" });
       }
@@ -169,11 +181,10 @@ export default function Dashboard() {
     formData.append("file", croppedImage, "project.jpg");
     
     try {
-      const token = localStorage.getItem("token");
       toast.loading("Uploading project image...", { id: "project-img" });
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-project-image/${user.username}?project_id=${selectedProjectId}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
         body: formData,
       });
       
@@ -198,13 +209,10 @@ export default function Dashboard() {
     if (!user) return;
     
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${user.username}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           background_preference: theme.background,
           theme_color: theme.color,
@@ -233,10 +241,9 @@ export default function Dashboard() {
     try {
       setUploadingImage(true);
       toast.loading("Uploading image...", { id: "section-img" });
-      const token = localStorage.getItem("token");
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload-project-image/${user.username}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
         body: formData,
       });
       

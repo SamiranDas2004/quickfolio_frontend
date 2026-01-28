@@ -24,17 +24,31 @@ export default function PricingPage() {
     script.async = true;
     document.body.appendChild(script);
 
-    const token = localStorage.getItem("token");
-    if (token) {
-      const username = localStorage.getItem("username");
-      if (username) {
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`)
-          .then(res => res.json())
-          .then(data => setUserId(data.id))
-          .catch(() => {});
-      }
-    }
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/me`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const userData = await response.json();
+        const userRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${userData.username}`, {
+          credentials: "include",
+        });
+        if (userRes.ok) {
+          const data = await userRes.json();
+          setUserId(data.id);
+        }
+      } else if (response.status === 401) {
+        // Not logged in, that's okay for pricing page
+        setUserId(null);
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+    }
+  };
 
   const handlePayment = async (planName: string, amount: number) => {
     if (!userId) {
