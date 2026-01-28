@@ -8,7 +8,7 @@ export interface User {
   bio: string; // description text
   avatar_url: string;
   background_preference: "ripple" | "beams";
-  template_type: "conversational" | "fullpage" | "professional" | "modern" | "terminal";
+  template_type: "conversational" | "fullpage" | "professional" | "modern" | "terminal" | "design";
   social_links: SocialLinks;
   projects: Project[];
   skills: string[];
