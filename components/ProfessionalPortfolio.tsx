@@ -1,4 +1,5 @@
 "use client";
+import { ensureHttps } from "@/lib/urlUtils";
 import { User } from "@/types/user";
 import Image from "next/image";
 import { useState } from "react";
@@ -91,7 +92,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
           <div className="fixed right-24 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-6 items-center">
             {user.social_links?.linkedin && (
               <a
-                href={user.social_links.linkedin}
+                href={ensureHttps(user.social_links.linkedin)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-gray-900 transition-colors text-xl tracking-wider origin-center"
@@ -102,7 +103,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             )}
             {user.social_links?.github && (
               <a
-                href={user.social_links.github}
+                href={ensureHttps(user.social_links.github)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-gray-900 transition-colors text-xl tracking-wider origin-center"
@@ -446,7 +447,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             <div className="flex justify-center gap-4 flex-wrap">
               {user.social_links?.linkedin && (
                 <a
-                  href={user.social_links.linkedin}
+                  href={ensureHttps(user.social_links.linkedin)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-gray-900 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
@@ -457,7 +458,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
               )}
               {user.social_links?.github && (
                 <a
-                  href={user.social_links.github}
+                  href={ensureHttps(user.social_links.github)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-gray-900 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
@@ -468,7 +469,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
               )}
               {user.social_links?.twitter && (
                 <a
-                  href={user.social_links.twitter}
+                  href={ensureHttps(user.social_links.twitter)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-gray-900 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
@@ -479,7 +480,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
               )}
               {(user.social_links?.website || user.social_links?.portfolio || user.social_links?.blog) && (
                 <a
-                  href={user.social_links.website || user.social_links.portfolio || user.social_links.blog}
+                  href={ensureHttps(user.social_links.website || user.social_links.portfolio || user.social_links.blog)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-gray-900 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"

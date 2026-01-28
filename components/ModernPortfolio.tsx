@@ -1,4 +1,5 @@
 "use client";
+import { ensureHttps } from "@/lib/urlUtils";
 import { User } from "@/types/user";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -451,7 +452,7 @@ export default function ModernPortfolio({ user }: ModernPortfolioProps) {
             <div className="flex justify-center gap-4">
               {user.social_links?.linkedin && (
                 <a
-                  href={user.social_links.linkedin}
+                  href={ensureHttps(user.social_links.linkedin)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-14 h-14 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center hover:border-purple-500/50 hover:bg-purple-500/10 transition-all"
@@ -461,7 +462,7 @@ export default function ModernPortfolio({ user }: ModernPortfolioProps) {
               )}
               {user.social_links?.github && (
                 <a
-                  href={user.social_links.github}
+                  href={ensureHttps(user.social_links.github)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-14 h-14 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center hover:border-purple-500/50 hover:bg-purple-500/10 transition-all"
@@ -471,7 +472,7 @@ export default function ModernPortfolio({ user }: ModernPortfolioProps) {
               )}
               {user.social_links?.twitter && (
                 <a
-                  href={user.social_links.twitter}
+                  href={ensureHttps(user.social_links.twitter)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-14 h-14 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center hover:border-purple-500/50 hover:bg-purple-500/10 transition-all"
@@ -481,7 +482,7 @@ export default function ModernPortfolio({ user }: ModernPortfolioProps) {
               )}
               {(user.social_links?.website || user.social_links?.portfolio) && (
                 <a
-                  href={user.social_links.website || user.social_links.portfolio}
+                  href={ensureHttps(user.social_links.website || user.social_links.portfolio)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-14 h-14 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-center hover:border-purple-500/50 hover:bg-purple-500/10 transition-all"

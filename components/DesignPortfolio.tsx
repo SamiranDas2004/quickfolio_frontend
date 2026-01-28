@@ -1,4 +1,5 @@
 "use client";
+import { ensureHttps } from "@/lib/urlUtils";
 import { User } from "@/types/user";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -125,7 +126,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
           <div className="flex justify-center gap-6 pt-4">
             {user.social_links?.github && (
               <a
-                href={user.social_links.github}
+                href={ensureHttps(user.social_links.github)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-orange-500 hover:text-orange-600 transition-colors"
@@ -137,7 +138,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             )}
             {user.social_links?.twitter && (
               <a
-                href={user.social_links.twitter}
+                href={ensureHttps(user.social_links.twitter)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-orange-500 hover:text-orange-600 transition-colors"
@@ -147,7 +148,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             )}
             {user.social_links?.linkedin && (
               <a
-                href={user.social_links.linkedin}
+                href={ensureHttps(user.social_links.linkedin)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-orange-500 hover:text-orange-600 transition-colors"
@@ -159,7 +160,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             )}
             {(user.social_links?.website || user.social_links?.portfolio) && (
               <a
-                href={user.social_links.website || user.social_links.portfolio}
+                href={ensureHttps(user.social_links.website || user.social_links.portfolio)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-orange-500 hover:text-orange-600 transition-colors"

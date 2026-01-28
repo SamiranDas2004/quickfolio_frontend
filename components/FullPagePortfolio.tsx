@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/moving-border";
 import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
 import ChatWidget from "@/components/ChatWidget";
+import { ensureHttps } from "@/lib/urlUtils";
 
 interface FullPagePortfolioProps {
   user: User;
@@ -313,7 +314,7 @@ export default function FullPagePortfolio({ user }: FullPagePortfolioProps) {
               <div className="space-y-4">
                 {user.social_links?.linkedin && (
                   <a
-                    href={user.social_links.linkedin}
+                    href={ensureHttps(user.social_links.linkedin)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
@@ -324,7 +325,7 @@ export default function FullPagePortfolio({ user }: FullPagePortfolioProps) {
                 )}
                 {user.social_links?.github && (
                   <a
-                    href={user.social_links.github}
+                    href={ensureHttps(user.social_links.github)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
@@ -335,7 +336,7 @@ export default function FullPagePortfolio({ user }: FullPagePortfolioProps) {
                 )}
                 {user.social_links?.twitter && (
                   <a
-                    href={user.social_links.twitter}
+                    href={ensureHttps(user.social_links.twitter)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
@@ -346,7 +347,7 @@ export default function FullPagePortfolio({ user }: FullPagePortfolioProps) {
                 )}
                 {user.social_links?.website && (
                   <a
-                    href={user.social_links.website}
+                    href={ensureHttps(user.social_links.website)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"

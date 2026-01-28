@@ -1,4 +1,5 @@
 "use client";
+import { ensureHttps } from "@/lib/urlUtils";
 import { User } from "@/types/user";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -359,12 +360,12 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                 <div className="flex items-center gap-4 text-xs text-gray-500">
                   <span>Follow me:</span>
                   {user.social_links?.github && (
-                    <a href={user.social_links.github} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    <a href={ensureHttps(user.social_links.github)} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                       <Github className="w-4 h-4" />
                     </a>
                   )}
                   {user.social_links?.twitter && (
-                    <a href={user.social_links.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    <a href={ensureHttps(user.social_links.twitter)} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                       <Twitter className="w-4 h-4" />
                     </a>
                   )}
@@ -521,17 +522,17 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                 <p className="text-gray-500 text-xs mb-4">Social Links</p>
                 <div className="flex flex-wrap gap-3">
                   {user.social_links?.github && (
-                    <a href={user.social_links.github} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors">
+                    <a href={ensureHttps(user.social_links.github)} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors">
                       <Github className="w-6 h-6 text-gray-400 hover:text-white" />
                     </a>
                   )}
                   {user.social_links?.linkedin && (
-                    <a href={user.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors">
+                    <a href={ensureHttps(user.social_links.linkedin)} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors">
                       <Linkedin className="w-6 h-6 text-gray-400 hover:text-white" />
                     </a>
                   )}
                   {user.social_links?.twitter && (
-                    <a href={user.social_links.twitter} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors">
+                    <a href={ensureHttps(user.social_links.twitter)} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors">
                       <Twitter className="w-6 h-6 text-gray-400 hover:text-white" />
                     </a>
                   )}
