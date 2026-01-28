@@ -3,7 +3,7 @@ import { ensureHttps } from "@/lib/urlUtils";
 import { User } from "@/types/user";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Globe, ExternalLink, Briefcase, Home, FileText, Layers, Wrench } from "lucide-react";
+import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Globe, ExternalLink, Briefcase, Home, FileText, Layers, Wrench, Menu, X } from "lucide-react";
 import ChatWidget from "@/components/ChatWidget";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 
@@ -15,6 +15,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const container = document.getElementById('main-content');
@@ -53,6 +54,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
         const offsetTop = element.offsetTop - container.offsetTop;
         container.scrollTo({ top: offsetTop, behavior: "smooth" });
         setActiveSection(id);
+        setMobileMenuOpen(false);
       }
     }
   };
@@ -62,18 +64,139 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
       <div className="absolute inset-0 z-0 pointer-events-none">
         <BackgroundBeams />
       </div>
+      
+      {/* Project Modal */}
       {selectedProject && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" style={{ animation: 'fadeIn 0.3s ease-out' }} onClick={() => setSelectedProject(null)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 md:p-4 bg-black/80 backdrop-blur-sm" style={{ animation: 'fadeIn 0.3s ease-out' }} onClick={() => setSelectedProject(null)}>
           <style jsx>{`@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }`}</style>
-          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-orange-500/50 shadow-2xl" style={{ animation: 'slideUp 0.5s ease-out' }} onClick={(e) => e.stopPropagation()}>
-            {selectedProject.image_url && <div className="w-full h-80 overflow-hidden rounded-t-[32px]"><img src={selectedProject.image_url} alt={selectedProject.title} className="w-full h-full object-cover" /></div>}
-            <button onClick={() => setSelectedProject(null)} className="absolute top-6 right-6 w-12 h-12 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"><svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
-            <div className="p-10"><h2 className="text-5xl font-black text-white mb-4">{selectedProject.title}</h2><p className="text-xl text-gray-400 mb-8 leading-relaxed">{selectedProject.description}</p>{selectedProject.tech_stack?.length > 0 && <div className="mb-8"><h3 className="text-sm text-gray-500 uppercase tracking-widest mb-4">Technologies</h3><div className="flex flex-wrap gap-3">{selectedProject.tech_stack.map((tech: string, idx: number) => <span key={idx} className="px-4 py-2 bg-orange-500/20 border border-orange-500/50 rounded-xl text-sm text-orange-400">{tech}</span>)}</div></div>}<div className="flex gap-4">{selectedProject.live_url && <a href={selectedProject.live_url} target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors flex items-center gap-2"><span>View Live</span><ExternalLink className="w-4 h-4" /></a>}{selectedProject.github_url && <a href={selectedProject.github_url} target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors flex items-center gap-2"><Github className="w-4 h-4" /><span>View Code</span></a>}</div></div>
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl md:rounded-[32px] max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-orange-500/50 shadow-2xl" style={{ animation: 'slideUp 0.5s ease-out' }} onClick={(e) => e.stopPropagation()}>
+            {selectedProject.image_url && (
+              <div className="w-full h-40 sm:h-60 md:h-80 overflow-hidden rounded-t-2xl md:rounded-t-[32px]">
+                <img src={selectedProject.image_url} alt={selectedProject.title} className="w-full h-full object-cover" />
+              </div>
+            )}
+            <button 
+              onClick={() => setSelectedProject(null)} 
+              className="absolute top-3 right-3 md:top-6 md:right-6 w-10 h-10 md:w-12 md:h-12 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+            >
+              <X className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            </button>
+            <div className="p-5 sm:p-8 md:p-10">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white mb-3 md:mb-4">{selectedProject.title}</h2>
+              <p className="text-sm sm:text-lg md:text-xl text-gray-400 mb-6 md:mb-8 leading-relaxed">{selectedProject.description}</p>
+              {selectedProject.tech_stack?.length > 0 && (
+                <div className="mb-6 md:mb-8">
+                  <h3 className="text-xs md:text-sm text-gray-500 uppercase tracking-widest mb-3 md:mb-4">Technologies</h3>
+                  <div className="flex flex-wrap gap-2 md:gap-3">
+                    {selectedProject.tech_stack.map((tech: string, idx: number) => (
+                      <span key={idx} className="px-3 py-1.5 md:px-4 md:py-2 bg-orange-500/20 border border-orange-500/50 rounded-lg md:rounded-xl text-xs md:text-sm text-orange-400">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                {selectedProject.live_url && (
+                  <a 
+                    href={selectedProject.live_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="px-5 py-2.5 md:px-6 md:py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
+                  >
+                    <span>View Live</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
+                {selectedProject.github_url && (
+                  <a 
+                    href={selectedProject.github_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="px-5 py-2.5 md:px-6 md:py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
+                  >
+                    <Github className="w-4 h-4" />
+                    <span>View Code</span>
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
-      {/* Fixed Left Sidebar - Profile Card */}
-      <aside className="fixed left-0 top-0 bottom-0 w-[450px] flex items-center justify-center p-12 z-50">
+
+      {/* Mobile Profile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gray-800/50">
+        <div className="flex items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-orange-500">
+              <Image
+                src={user.avatar_url || "/avatar.png"}
+                alt={user.name}
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-white">{user.name}</div>
+              <div className="text-xs text-gray-400">{user.title}</div>
+            </div>
+          </div>
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="w-10 h-10 flex items-center justify-center text-white"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+        
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-[#0a0a0a]/98 backdrop-blur-md border-b border-gray-800/50 py-4">
+            <div className="flex flex-col gap-1 px-4">
+              <button 
+                onClick={() => scrollToSection("home")} 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection === 'home' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:bg-gray-800'}`}
+              >
+                <Home className="w-5 h-5" />
+                <span>Home</span>
+              </button>
+              <button 
+                onClick={() => scrollToSection("projects")} 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection === 'projects' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:bg-gray-800'}`}
+              >
+                <Layers className="w-5 h-5" />
+                <span>Projects</span>
+              </button>
+              <button 
+                onClick={() => scrollToSection("experience")} 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection === 'experience' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:bg-gray-800'}`}
+              >
+                <Briefcase className="w-5 h-5" />
+                <span>Experience</span>
+              </button>
+              <button 
+                onClick={() => scrollToSection("skills")} 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection === 'skills' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:bg-gray-800'}`}
+              >
+                <Wrench className="w-5 h-5" />
+                <span>Skills</span>
+              </button>
+              <button 
+                onClick={() => scrollToSection("connect")} 
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection === 'connect' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:bg-gray-800'}`}
+              >
+                <Mail className="w-5 h-5" />
+                <span>Contact</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Fixed Left Sidebar - Profile Card (Desktop Only) */}
+      <aside className="hidden lg:fixed lg:flex left-0 top-0 bottom-0 w-[450px] items-center justify-center p-12 z-50">
         <div 
           className="bg-white text-black rounded-[40px] p-10 max-w-[380px] w-full shadow-2xl relative"
           style={{
@@ -175,10 +298,10 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
       </aside>
 
       {/* Main Content Area - Scrollable */}
-      <main id="main-content" className="ml-[450px] flex-1 h-screen overflow-y-auto scroll-smooth flex justify-center" style={{ willChange: 'scroll-position' }}>
+      <main id="main-content" className="lg:ml-[450px] flex-1 h-screen overflow-y-auto scroll-smooth flex justify-center pt-16 lg:pt-0" style={{ willChange: 'scroll-position' }}>
         <div className="w-full max-w-5xl">
-        {/* Top Navigation Icons */}
-        <nav className="sticky top-0 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gray-800/50 flex justify-center">
+        {/* Top Navigation Icons (Desktop Only) */}
+        <nav className="hidden lg:flex sticky top-0 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-gray-800/50 justify-center">
           <div className="flex items-center justify-center gap-10 py-7">
             <button 
               onClick={() => scrollToSection("home")} 
@@ -221,7 +344,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
         </nav>
 
         {/* Hero Section */}
-        <section id="home" className="min-h-screen flex items-center px-20 py-24">
+        <section id="home" className="min-h-screen flex items-center px-4 sm:px-6 md:px-12 lg:px-20 py-16 sm:py-20 md:py-24">
           <div 
             className="max-w-6xl w-full"
             style={{
@@ -230,33 +353,36 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
               transition: 'opacity 0.1s ease-out, transform 0.1s ease-out'
             }}
           >
-            <h1 className="text-[120px] font-black mb-8 leading-none tracking-tight">
-              {user.title?.split(' ')[0].toUpperCase()}<br/>
-              {user.title?.split(' ').slice(1).join(' ').toUpperCase() || ""}            </h1>
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[120px] font-black mb-6 md:mb-8 leading-none tracking-tight">
+              {user.title?.split(' ')[0]?.toUpperCase() || "SOFTWARE"}<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-700">
+                {user.title?.split(' ').slice(1).join(' ').toUpperCase() || "ENGINEER"}
+              </span>
+            </h1>
             {user.bio && (
-              <p className="text-lg text-gray-400 mb-16 leading-relaxed max-w-2xl">
+              <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-10 sm:mb-12 md:mb-16 leading-relaxed max-w-2xl">
                 {user.bio}
               </p>
             )}
             
             {/* Stats */}
             {(user.experience?.length || user.projects?.length || user.skills?.length) && (
-              <div className="grid grid-cols-3 gap-12 mb-16 max-w-3xl">
+              <div className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-12 mb-10 sm:mb-12 md:mb-16 max-w-3xl">
                 <div>
-                  <div className="text-6xl font-black text-white mb-3">{((user as any).experiences || user.experience)?.length || 5}+</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-widest leading-tight">
+                  <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 md:mb-3">{((user as any).experiences || user.experience)?.length || 5}+</div>
+                  <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-widest leading-tight">
                     YEARS OF<br/>EXPERIENCE
                   </div>
                 </div>
                 <div>
-                  <div className="text-6xl font-black text-white mb-3">{user.projects?.length || 0}</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-widest leading-tight">
+                  <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 md:mb-3">{user.projects?.length || 0}</div>
+                  <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-widest leading-tight">
                     PROJECTS<br/>COMPLETED
                   </div>
                 </div>
                 <div>
-                  <div className="text-6xl font-black text-white mb-3">{user.skills?.length || 0}</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-widest leading-tight">
+                  <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 md:mb-3">{user.skills?.length || 0}</div>
+                  <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-widest leading-tight">
                     SKILLS &<br/>TECHNOLOGIES
                   </div>
                 </div>
@@ -264,28 +390,28 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             )}
 
             {/* Skill Cards */}
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl">
               {/* Experience Card */}
               {((user as any).experiences || user.experience) && ((user as any).experiences || user.experience).length > 0 && (
-                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-[32px] p-10 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300 cursor-pointer">
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl md:rounded-[32px] p-6 sm:p-8 md:p-10 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300 cursor-pointer">
                   <div className="relative z-10">
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
-                      <Briefcase className="w-7 h-7 text-white" />
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-white/20 backdrop-blur-sm rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-6">
+                      <Briefcase className="w-6 h-6 md:w-7 md:h-7 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white uppercase tracking-wide leading-tight mb-4">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-wide leading-tight mb-3 md:mb-4">
                       {((user as any).experiences || user.experience)[0]?.position || ((user as any).experiences || user.experience)[0]?.role}
                     </h3>
-                    <p className="text-white/80 text-sm">
+                    <p className="text-white/80 text-xs sm:text-sm">
                       {((user as any).experiences || user.experience)[0]?.company}{((user as any).experiences || user.experience).length > 1 ? '...' : ''}
                     </p>
                     {((user as any).experiences || user.experience).length > 1 && (
-                      <p className="text-white/60 text-xs mt-2">
+                      <p className="text-white/60 text-[10px] sm:text-xs mt-2">
                         +{((user as any).experiences || user.experience).length - 1} more experience
                       </p>
                     )}
                   </div>
-                  <button className="absolute bottom-8 right-8 w-12 h-12 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-black/40 transition-colors">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <button className="absolute bottom-6 right-6 md:bottom-8 md:right-8 w-10 h-10 md:w-12 md:h-12 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-black/40 transition-colors">
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </button>
@@ -294,7 +420,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
 
               {/* Skills Card */}
               {user.skills && user.skills.length > 0 && (
-                <div className="bg-gradient-to-br from-[#c4f82a] to-[#a8e024] rounded-[32px] p-10 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300 cursor-pointer">
+                <div className="bg-gradient-to-br from-[#c4f82a] to-[#a8e024] rounded-2xl md:rounded-[32px] p-6 sm:p-8 md:p-10 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300 cursor-pointer">
                   <div className="absolute inset-0 opacity-5">
                     <svg className="w-full h-full" viewBox="0 0 400 300">
                       <line x1="0" y1="0" x2="400" y2="300" stroke="currentColor" strokeWidth="2"/>
@@ -303,18 +429,18 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                     </svg>
                   </div>
                   <div className="relative z-10">
-                    <div className="w-14 h-14 bg-black/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
-                      <Wrench className="w-7 h-7 text-black" />
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-black/10 backdrop-blur-sm rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-6">
+                      <Wrench className="w-6 h-6 md:w-7 md:h-7 text-black" />
                     </div>
-                    <h3 className="text-2xl font-bold text-black uppercase tracking-wide leading-tight mb-4">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black uppercase tracking-wide leading-tight mb-3 md:mb-4">
                       {user.skills.slice(0, 3).join(', ')}{user.skills.length > 3 ? '...' : ''}
                     </h3>
-                    <p className="text-black/70 text-sm">
+                    <p className="text-black/70 text-xs sm:text-sm">
                       {user.skills.length > 3 ? `+${user.skills.length - 3} more skills` : `${user.skills.length} skills`}
                     </p>
                   </div>
-                  <button className="absolute bottom-8 right-8 w-12 h-12 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-black/20 transition-colors">
-                    <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <button className="absolute bottom-6 right-6 md:bottom-8 md:right-8 w-10 h-10 md:w-12 md:h-12 bg-black/10 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-black/20 transition-colors">
+                    <svg className="w-5 h-5 md:w-6 md:h-6 text-black" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </button>
@@ -326,10 +452,10 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
 
         {/* Projects Section */}
         {user.projects && user.projects.length > 0 && (
-          <section id="projects" className="min-h-screen py-32 px-20">
+          <section id="projects" className="min-h-screen py-16 sm:py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-20">
             <div className="max-w-6xl w-full">
               <h2 
-                className="text-[100px] font-black mb-20 leading-none tracking-tight"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[100px] font-black mb-10 sm:mb-16 md:mb-20 leading-none tracking-tight"
                 style={{
                   opacity: Math.max(0, 1 - Math.abs(scrollProgress - 20) / 15),
                   transform: `translateY(${Math.max(-20, -scrollProgress + 20)}px)`,
@@ -339,7 +465,7 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                 RECENT<br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-700">PROJECTS</span>
               </h2>
-              <div className="space-y-8">
+              <div className="space-y-4 sm:space-y-6 md:space-y-8">
                 {user.projects.slice(0, 3).map((project, index) => (
                   <div
                     key={project.id}
@@ -351,11 +477,11 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                       transition: 'opacity 0.3s ease-out, transform 0.3s ease-out'
                     }}
                   >
-                    <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm border-2 border-gray-700/50 rounded-[28px] p-8 hover:border-purple-500/50 transition-all duration-300">
-                      <div className="flex items-center justify-between gap-8">
-                        <div className="flex items-center gap-8 flex-1">
+                    <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm border-2 border-gray-700/50 rounded-2xl md:rounded-[28px] p-4 sm:p-6 md:p-8 hover:border-purple-500/50 transition-all duration-300">
+                      <div className="flex items-center justify-between gap-3 sm:gap-6 md:gap-8">
+                        <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-1 min-w-0">
                           {project.image_url && (
-                            <div className="w-28 h-28 rounded-2xl overflow-hidden bg-gray-700 flex-shrink-0 border-4 border-purple-500/80 shadow-lg shadow-purple-500/20">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 rounded-xl md:rounded-2xl overflow-hidden bg-gray-700 flex-shrink-0 border-2 md:border-4 border-purple-500/80 shadow-lg shadow-purple-500/20">
                               <img
                                 src={project.image_url}
                                 alt={project.title}
@@ -363,13 +489,13 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                               />
                             </div>
                           )}
-                          <div className="flex-1">
-                            <h3 className="text-4xl font-bold text-white mb-2">{project.title}</h3>
-                            <p className="text-gray-400 text-base">{project.description}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-1 md:mb-2 truncate">{project.title}</h3>
+                            <p className="text-gray-400 text-xs sm:text-sm md:text-base line-clamp-2">{project.description}</p>
                           </div>
                         </div>
-                        <button className="w-14 h-14 bg-orange-500/10 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-all duration-300 flex-shrink-0">
-                          <svg className="w-7 h-7 text-orange-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                        <button className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-full flex items-center justify-center group-hover:bg-orange-500 transition-all duration-300 flex-shrink-0">
+                          <svg className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-orange-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                           </svg>
                         </button>
@@ -384,10 +510,10 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
 
         {/* Experience Section */}
         {((user as any).experiences || user.experience) && ((user as any).experiences || user.experience).length > 0 && (
-          <section id="experience" className="min-h-screen py-32 px-20">
+          <section id="experience" className="min-h-screen py-16 sm:py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-20">
             <div className="max-w-6xl w-full">
               <h2 
-                className="text-[100px] font-black mb-20 leading-none tracking-tight"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[100px] font-black mb-10 sm:mb-16 md:mb-20 leading-none tracking-tight"
                 style={{
                   opacity: Math.max(0, 1 - Math.abs(scrollProgress - 45) / 15),
                   transform: `translateY(${Math.max(-20, -scrollProgress + 45)}px)`,
@@ -397,31 +523,31 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                 WORK<br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-700">EXPERIENCE</span>
               </h2>
-              <div className="space-y-16">
+              <div className="space-y-8 sm:space-y-12 md:space-y-16">
                 {((user as any).experiences || user.experience).map((exp: any, index: number) => (
                   <div 
                     key={exp.id} 
-                    className="border-b border-gray-800 pb-16 last:border-0"
+                    className="border-b border-gray-800 pb-8 sm:pb-12 md:pb-16 last:border-0"
                     style={{
                       opacity: Math.max(0, 1 - Math.abs(scrollProgress - 50 - index * 8) / 25),
                       transform: `translateY(${Math.max(-30, -scrollProgress + 50 + index * 8)}px)`,
                       transition: 'opacity 0.3s ease-out, transform 0.3s ease-out'
                     }}
                   >
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-4 mb-3">
-                          <h3 className="text-4xl font-bold text-white">{exp.position || exp.role}</h3>
+                    <div className="flex items-start justify-between gap-3 sm:gap-6 mb-4 sm:mb-6">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 sm:mb-3">
+                          <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">{exp.position || exp.role}</h3>
                           {exp.duration && (
-                            <span className="text-sm text-gray-500 tracking-wide">• {exp.duration}</span>
+                            <span className="text-xs sm:text-sm text-gray-500 tracking-wide">• {exp.duration}</span>
                           )}
                         </div>
-                        <h4 className="text-2xl font-semibold text-orange-500 mb-4">{exp.company}</h4>
-                        <p className="text-gray-400 text-lg mb-4 leading-relaxed max-w-3xl">{exp.description}</p>
+                        <h4 className="text-lg sm:text-xl md:text-2xl font-semibold text-orange-500 mb-3 sm:mb-4">{exp.company}</h4>
+                        <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-3 sm:mb-4 leading-relaxed">{exp.description}</p>
                         {exp.technologies && exp.technologies.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-4">
+                          <div className="flex flex-wrap gap-2 mt-3 sm:mt-4">
                             {exp.technologies.map((tech: string, idx: number) => (
-                              <span key={idx} className="px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-sm text-gray-300">
+                              <span key={idx} className="px-3 py-1.5 md:px-4 md:py-2 bg-gray-800/50 border border-gray-700/50 rounded-lg md:rounded-xl text-xs md:text-sm text-gray-300">
                                 {tech}
                               </span>
                             ))}
@@ -433,9 +559,9 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                           href={exp.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-14 h-14 bg-orange-500/10 rounded-full flex items-center justify-center hover:bg-orange-500 transition-all duration-300 flex-shrink-0 ml-8"
+                          className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-orange-500/10 rounded-full flex items-center justify-center hover:bg-orange-500 transition-all duration-300 flex-shrink-0"
                         >
-                          <ExternalLink className="w-6 h-6 text-orange-500 hover:text-white transition-colors" />
+                          <ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500 hover:text-white transition-colors" />
                         </a>
                       )}
                     </div>
@@ -448,10 +574,10 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
 
         {/* Skills Section */}
         {user.skills && user.skills.length > 0 && (
-          <section id="skills" className="py-32 px-20">
+          <section id="skills" className="py-16 sm:py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-20">
             <div className="max-w-6xl w-full">
               <h2 
-                className="text-[100px] font-black mb-20 leading-none tracking-tight"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[100px] font-black mb-10 sm:mb-16 md:mb-20 leading-none tracking-tight"
                 style={{
                   opacity: Math.max(0, 1 - Math.abs(scrollProgress - 70) / 15),
                   transform: `translateY(${Math.max(-20, -scrollProgress + 70)}px)`,
@@ -461,11 +587,11 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                 SKILLS &<br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-700">TECHNOLOGIES</span>
               </h2>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4">
                 {user.skills.map((skill, idx) => (
                   <div
                     key={idx}
-                    className="px-8 py-4 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-base text-white hover:border-orange-500/50 hover:bg-gray-800 transition-all duration-300"
+                    className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 bg-gray-800/50 border border-gray-700/50 rounded-xl md:rounded-2xl text-sm sm:text-base text-white hover:border-orange-500/50 hover:bg-gray-800 transition-all duration-300"
                   >
                     {skill}
                   </div>
@@ -480,23 +606,23 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
           .filter((section: any) => section.visible && section.items && section.items.length > 0)
           .sort((a: any, b: any) => a.order - b.order)
           .map((section: any, sectionIndex: number) => (
-            <section key={section.id} className="py-32 px-20">
+            <section key={section.id} className="py-16 sm:py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-20">
               <div className="max-w-6xl w-full">
-                <h2 className="text-[100px] font-black mb-20 leading-none tracking-tight uppercase">
+                <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-[100px] font-black mb-10 sm:mb-16 md:mb-20 leading-none tracking-tight uppercase">
                   {section.title.split(' ')[0]}<br/>
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-600 to-gray-700">
                     {section.title.split(' ').slice(1).join(' ') || section.title}
                   </span>
                 </h2>
-                <div className="space-y-8">
+                <div className="space-y-4 sm:space-y-6 md:space-y-8">
                   {section.items.map((item: any, itemIndex: number) => (
                     <div
                       key={item.id || itemIndex}
-                      className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm border-2 border-gray-700/50 rounded-[28px] p-8 hover:border-orange-500/50 transition-all duration-300"
+                      className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm border-2 border-gray-700/50 rounded-2xl md:rounded-[28px] p-4 sm:p-6 md:p-8 hover:border-orange-500/50 transition-all duration-300"
                     >
-                      <div className="flex items-start gap-8">
+                      <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 md:gap-8">
                         {item.image && (
-                          <div className="w-28 h-28 rounded-2xl overflow-hidden bg-gray-700 flex-shrink-0 border-4 border-orange-500/80 shadow-lg shadow-orange-500/20">
+                          <div className="w-full sm:w-20 sm:h-20 md:w-28 md:h-28 aspect-square sm:aspect-auto rounded-xl md:rounded-2xl overflow-hidden bg-gray-700 flex-shrink-0 border-2 md:border-4 border-orange-500/80 shadow-lg shadow-orange-500/20">
                             <img
                               src={item.image}
                               alt={item.title}
@@ -504,21 +630,21 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                             />
                           </div>
                         )}
-                        <div className="flex-1">
-                          <h3 className="text-3xl font-bold text-white mb-3">{item.title}</h3>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3">{item.title}</h3>
                           {item.subtitle && (
-                            <p className="text-xl text-orange-500 mb-3">{item.subtitle}</p>
+                            <p className="text-base sm:text-lg md:text-xl text-orange-500 mb-2 sm:mb-3">{item.subtitle}</p>
                           )}
-                          <p className="text-gray-400 text-base leading-relaxed">{item.content}</p>
+                          <p className="text-sm sm:text-base text-gray-400 leading-relaxed">{item.content}</p>
                           {item.link && (
                             <a
                               href={item.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 mt-4 text-orange-500 hover:text-orange-400 transition-colors"
+                              className="inline-flex items-center gap-2 mt-3 sm:mt-4 text-sm sm:text-base text-orange-500 hover:text-orange-400 transition-colors"
                             >
                               <span>Learn more</span>
-                              <ExternalLink className="w-4 h-4" />
+                              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
                             </a>
                           )}
                         </div>
@@ -531,10 +657,10 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
           ))}
 
         {/* Contact Section */}
-        <section id="connect" className="py-32 px-20 min-h-screen flex items-center">
+        <section id="connect" className="py-16 sm:py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-20 min-h-screen flex items-center">
           <div className="max-w-6xl w-full">
             <h2 
-              className="text-5xl font-bold mb-16 text-white"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-10 sm:mb-12 md:mb-16 text-white"
               style={{
                 opacity: Math.max(0, 1 - Math.abs(scrollProgress - 85) / 15),
                 transform: `translateY(${Math.max(-20, -scrollProgress + 85)}px)`,
@@ -543,15 +669,15 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
             >
               Let's Connect
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               {user.contact?.email && (
                 <a
                   href={`mailto:${user.contact.email}`}
-                  className="bg-gray-900/50 border border-gray-800/50 rounded-[24px] p-10 hover:border-orange-500/50 hover:bg-gray-900 transition-all duration-300 group"
+                  className="bg-gray-900/50 border border-gray-800/50 rounded-2xl md:rounded-[24px] p-6 sm:p-8 md:p-10 hover:border-orange-500/50 hover:bg-gray-900 transition-all duration-300 group"
                 >
-                  <Mail className="w-10 h-10 text-orange-500 mb-6 group-hover:scale-110 transition-transform" />
-                  <div className="text-xs text-gray-500 uppercase tracking-widest mb-3">Email</div>
-                  <div className="text-base text-white group-hover:text-orange-500 transition-colors break-all">
+                  <Mail className="w-8 h-8 md:w-10 md:h-10 text-orange-500 mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
+                  <div className="text-xs text-gray-500 uppercase tracking-widest mb-2 sm:mb-3">Email</div>
+                  <div className="text-sm sm:text-base text-white group-hover:text-orange-500 transition-colors break-all">
                     {user.contact.email}
                   </div>
                 </a>
@@ -560,21 +686,21 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
               {user.contact?.phone && (
                 <a
                   href={`tel:${user.contact.phone}`}
-                  className="bg-gray-900/50 border border-gray-800/50 rounded-[24px] p-10 hover:border-orange-500/50 hover:bg-gray-900 transition-all duration-300 group"
+                  className="bg-gray-900/50 border border-gray-800/50 rounded-2xl md:rounded-[24px] p-6 sm:p-8 md:p-10 hover:border-orange-500/50 hover:bg-gray-900 transition-all duration-300 group"
                 >
-                  <Phone className="w-10 h-10 text-orange-500 mb-6 group-hover:scale-110 transition-transform" />
-                  <div className="text-xs text-gray-500 uppercase tracking-widest mb-3">Phone</div>
-                  <div className="text-base text-white group-hover:text-orange-500 transition-colors">
+                  <Phone className="w-8 h-8 md:w-10 md:h-10 text-orange-500 mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
+                  <div className="text-xs text-gray-500 uppercase tracking-widest mb-2 sm:mb-3">Phone</div>
+                  <div className="text-sm sm:text-base text-white group-hover:text-orange-500 transition-colors">
                     {user.contact.phone}
                   </div>
                 </a>
               )}
 
               {user.contact?.location && (
-                <div className="bg-gray-900/50 border border-gray-800/50 rounded-[24px] p-10">
-                  <MapPin className="w-10 h-10 text-orange-500 mb-6" />
-                  <div className="text-xs text-gray-500 uppercase tracking-widest mb-3">Location</div>
-                  <div className="text-base text-white">{user.contact.location}</div>
+                <div className="bg-gray-900/50 border border-gray-800/50 rounded-2xl md:rounded-[24px] p-6 sm:p-8 md:p-10 sm:col-span-2 md:col-span-1">
+                  <MapPin className="w-8 h-8 md:w-10 md:h-10 text-orange-500 mb-4 sm:mb-6" />
+                  <div className="text-xs text-gray-500 uppercase tracking-widest mb-2 sm:mb-3">Location</div>
+                  <div className="text-sm sm:text-base text-white">{user.contact.location}</div>
                 </div>
               )}
             </div>
@@ -582,8 +708,8 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-gray-800 py-10 bg-[#0a0a0a]">
-          <div className="max-w-6xl mx-auto px-20 text-center text-sm text-gray-500">
+        <footer className="border-t border-gray-800 py-6 sm:py-8 md:py-10 bg-[#0a0a0a]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20 text-center text-xs sm:text-sm text-gray-500">
             <p>© {new Date().getFullYear()} {user.name}. All rights reserved. Powered by Quickfolio</p>
           </div>
         </footer>
