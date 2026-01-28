@@ -653,6 +653,7 @@ export default function Dashboard() {
     <option className="bg-black text-white" value="professional">Professional (White)</option>
     <option className="bg-black text-white" value="modern">Modern (Glassmorphism)</option>
     <option className="bg-black text-white" value="terminal">Terminal (Developer)</option>
+    <option className="bg-black text-white" value="design">Design Portfolio (Creative)</option>
   </select>
   <p className="text-zinc-400 text-xs mt-2">Choose between minimal conversational style or traditional full-page portfolio</p>
 </div>

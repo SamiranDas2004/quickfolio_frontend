@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { SharedBackground, getTextColor, getSecondaryTextColor } from "@/components/SharedBackground";
+import { SharedBackground } from "@/components/SharedBackground";
+import { getTextColor, getSecondaryTextColor } from "@/lib/backgroundUtils";
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 import { User } from "@/types/user";
 import Navigation from "@/components/Navigation";
@@ -8,13 +9,14 @@ import FullPagePortfolio from "@/components/FullPagePortfolio";
 import ProfessionalPortfolio from "@/components/ProfessionalPortfolio";
 import ModernPortfolio from "@/components/ModernPortfolio";
 import TerminalStyle from "@/components/TerminalStyle";
+import DesignPortfolio from "@/components/DesignPortfolio";
 import { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
   const { username } = await params;
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`, {
-      next: { revalidate: 3600 }
+      cache: 'no-store'
     });
     
     if (!response.ok) {
@@ -57,7 +59,7 @@ export default async function UserPortfolio({ params }: { params: Promise<{ user
 
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${username}`, {
-      next: { revalidate: 3600 }
+      cache: 'no-store'
     });
     if (response.ok) {
       user = await response.json();
@@ -97,6 +99,11 @@ export default async function UserPortfolio({ params }: { params: Promise<{ user
   // Render terminal template if selected
   if (user?.template_type === "terminal") {
     return <TerminalStyle user={user} />;
+  }
+
+  // Render design template if selected
+  if (user?.template_type === "design") {
+    return <DesignPortfolio user={user} />;
   }
 
   const backgroundType = user?.background_preference || "ripple";

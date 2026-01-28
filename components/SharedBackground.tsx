@@ -16,9 +16,9 @@ interface SharedBackgroundProps {
   backgroundType: string;
 }
 
+const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
+
 export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
-  const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
-  
   if (backgroundType === "birds") return <VantaBirds />;
   if (backgroundType === "globe") return <VantaGlobe />;
   if (backgroundType === "halo") return <VantaHalo />;
@@ -65,7 +65,6 @@ export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
     );
   }
   
-  // Default to lines
   return (
     <div className="absolute inset-0 bg-black">
       <BackgroundLines className="absolute inset-0">
@@ -73,36 +72,4 @@ export function SharedBackground({ backgroundType }: SharedBackgroundProps) {
       </BackgroundLines>
     </div>
   );
-}
-
-export function getTextColor(backgroundType: string) {
-  const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
-  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings", "vortex"];
-  
-  if (vantaThemes.includes(backgroundType)) return "text-white";
-  if (imageThemes.includes(backgroundType)) {
-    return "text-white";
-  }
-  
-  if (backgroundType === "ripple") {
-    return "text-neutral-600 dark:text-white";
-  }
-  
-  return "text-neutral-600 dark:text-neutral-400";
-}
-
-export function getSecondaryTextColor(backgroundType: string) {
-  const imageThemes = ["blackpanther", "evil_linux", "linux", "windows_xp"];
-  const vantaThemes = ["birds", "globe", "halo", "dots", "clouds", "clouds1", "rings", "vortex"];
-  
-  if (vantaThemes.includes(backgroundType)) return "text-white/80";
-  if (imageThemes.includes(backgroundType)) {
-    return "text-white/90";
-  }
-  
-  if (backgroundType === "ripple") {
-    return "text-neutral-500 dark:text-neutral-300";
-  }
-  
-  return "text-neutral-500";
 }
