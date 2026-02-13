@@ -11,12 +11,6 @@ interface ProfessionalPortfolioProps {
   user: User;
 }
 
-const decodeHtmlEntities = (text: string) => {
-  const textarea = document.createElement('textarea');
-  textarea.innerHTML = text;
-  return textarea.value;
-};
-
 export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioProps) {
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -683,9 +677,10 @@ export default function ProfessionalPortfolio({ user }: ProfessionalPortfolioPro
                 >
                   <Mail className="w-8 h-8 md:w-10 md:h-10 text-orange-500 mb-4 sm:mb-6 group-hover:scale-110 transition-transform" />
                   <div className="text-xs text-gray-500 uppercase tracking-widest mb-2 sm:mb-3">Email</div>
-                  <div className="text-sm sm:text-base text-white group-hover:text-orange-500 transition-colors break-words word-break-break-word">
-                    {decodeHtmlEntities(user.contact.email)}
-                  </div>
+                  <div 
+                    className="text-sm sm:text-base text-white group-hover:text-orange-500 transition-colors break-words"
+                    dangerouslySetInnerHTML={{ __html: user.contact.email }}
+                  />
                 </a>
               )}
 
