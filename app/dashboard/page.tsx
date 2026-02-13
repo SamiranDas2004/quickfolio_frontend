@@ -22,6 +22,8 @@ export default function Dashboard() {
   const [editingSection, setEditingSection] = useState<any>(null);
   const [newSectionData, setNewSectionData] = useState({ type: "", title: "", content: "", image: "", link: "" });
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+  const [newProjectData, setNewProjectData] = useState({ title: "", description: "", tech_stack: "", github_url: "", live_url: "" });
 
   useEffect(() => {
     checkAuth();
@@ -258,6 +260,40 @@ export default function Dashboard() {
       toast.error("Upload failed", { id: "section-img" });
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  const handleAddProject = async () => {
+    if (!user || !newProjectData.title) {
+      toast.error("Please enter project title");
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/projects/${user.username}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          title: newProjectData.title,
+          description: newProjectData.description,
+          tech_stack: newProjectData.tech_stack.split(",").map(t => t.trim()).filter(t => t),
+          github_url: newProjectData.github_url,
+          live_url: newProjectData.live_url,
+        }),
+      });
+      
+      if (response.ok) {
+        const newProject = await response.json();
+        setUser({ ...user, projects: [...user.projects, newProject] });
+        setShowAddProjectModal(false);
+        setNewProjectData({ title: "", description: "", tech_stack: "", github_url: "", live_url: "" });
+        toast.success("Project added successfully");
+      } else {
+        toast.error("Failed to add project");
+      }
+    } catch (error) {
+      toast.error("Failed to add project");
     }
   };
 
@@ -673,7 +709,10 @@ export default function Dashboard() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-white">Projects</h2>
-                  <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all">
+                  <button 
+                    onClick={() => setShowAddProjectModal(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all"
+                  >
                     Add Project
                   </button>
                 </div>
@@ -889,6 +928,89 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
+
+      {showAddProjectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="bg-black/90 border border-white/20 rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold text-white mb-6">Add New Project</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-2">Project Title *</label>
+                <input
+                  type="text"
+                  value={newProjectData.title}
+                  onChange={(e) => setNewProjectData({ ...newProjectData, title: e.target.value })}
+                  placeholder="My Awesome Project"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-2">Description</label>
+                <textarea
+                  value={newProjectData.description}
+                  onChange={(e) => setNewProjectData({ ...newProjectData, description: e.target.value })}
+                  placeholder="Brief description of your project"
+                  rows={3}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-2">Tech Stack</label>
+                <input
+                  type="text"
+                  value={newProjectData.tech_stack}
+                  onChange={(e) => setNewProjectData({ ...newProjectData, tech_stack: e.target.value })}
+                  placeholder="React, Node.js, MongoDB (comma separated)"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-2">GitHub URL</label>
+                <input
+                  type="url"
+                  value={newProjectData.github_url}
+                  onChange={(e) => setNewProjectData({ ...newProjectData, github_url: e.target.value })}
+                  placeholder="https://github.com/username/repo"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-zinc-300 mb-2">Live URL</label>
+                <input
+                  type="url"
+                  value={newProjectData.live_url}
+                  onChange={(e) => setNewProjectData({ ...newProjectData, live_url: e.target.value })}
+                  placeholder="https://myproject.com"
+                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleAddProject}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all font-medium"
+              >
+                Add Project
+              </button>
+              <button
+                onClick={() => {
+                  setShowAddProjectModal(false);
+                  setNewProjectData({ title: "", description: "", tech_stack: "", github_url: "", live_url: "" });
+                }}
+                className="px-6 py-3 bg-white/5 border border-white/20 text-white rounded-xl hover:bg-white/10 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showAddSectionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
